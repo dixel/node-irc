@@ -7,7 +7,6 @@ using namespace node;
 
 class IRC;
 	public:
-		
 		irc_session_t* session;
 		irc_callbacks_t* irc-cb;
 		char* channel = "#nodejs";

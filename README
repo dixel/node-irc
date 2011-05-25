@@ -16,6 +16,8 @@ Simple binding of libircclient for node.js.
 -----------------------------------------------
 2. COMMIT HISTORY
     10.03.11:   First commit: README, package.json files, TODO list
+	17.03.11:	Added accessors for channel connection processing
+	12.04.11:	Testing environment for libircclient and libev - testirc
 -----------------------------------------------
 3. FUNCTIONS DESCRIPTION
 This is the list of most common libircclient functions musthave in our implementation
