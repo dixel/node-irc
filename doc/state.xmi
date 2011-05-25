@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<XMI verified="false" xmi.version="1.2" timestamp="2011-05-25T10:00:56" xmlns:UML="http://schema.omg.org/spec/UML/1.3">
+<XMI verified="false" xmi.version="1.2" timestamp="2011-05-25T13:00:56" xmlns:UML="http://schema.omg.org/spec/UML/1.3">
  <XMI.header>
   <XMI.documentation>
    <XMI.exporter>umbrello uml modeller http://uml.sf.net</XMI.exporter>
@@ -30,20 +30,28 @@
         <UML:DataType stereotype="datatype" visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="shsm4zTaLOim" name="string"/>
        </UML:Namespace.ownedElement>
       </UML:Package>
+      <UML:Package visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="t8fKuASvI35E" name="JavaScript objects">
+       <UML:Namespace.ownedElement/>
+      </UML:Package>
+      <UML:Package visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="KBszhg1YLD2n" name="v8 objects">
+       <UML:Namespace.ownedElement/>
+      </UML:Package>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="wABxvZ1mg0Gh" name="CreateSession()"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="L4eHQTGLcRIX" name="Connect"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="olg153UO67fW" name="Run()"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ylDNhB2AWo3V" name="Join()"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="fyhEnl6lWJ7D" comment="o" name="SendMsg()"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="liGjh0OdgcQR" name="run_thr()"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="pr1YeGQPyg8d" name="rec_cb"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="o9SJWiCLYDtC" name="rec_cb_ev"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ugxgOgkCpAUL" name="con_cb"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="tcJ2qGFiuCOI" name="con_cb_ev"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="AcvMDdFoxFcB" name="Session"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="YcXlkodSPaJe" name="Node.JS"/>
      </UML:Namespace.ownedElement>
      <XMI.extension xmi.extender="umbrello">
       <diagrams>
-       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="class diagram" font="Sans Serif,9,-1,0,50,0,0,0,0,0" canvasheight="558" canvaswidth="1235" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="BV3rjfCqOB64" documentation="" showscope="1" snapgrid="0" showatts="1" type="1">
-        <widgets/>
-        <messages/>
-        <associations/>
-       </diagram>
-       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="Node-IRC" font="Sans Serif,9,-1,0,50,0,0,0,0,0" canvasheight="558" canvaswidth="1235" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="v4jHvQ9hU7A2" documentation="" showscope="1" snapgrid="0" showatts="1" type="3">
-        <widgets/>
-        <messages/>
-        <associations/>
-       </diagram>
-       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="node-irc" font="Sans Serif,9,-1,0,50,0,0,0,0,0" canvasheight="1118" canvaswidth="1218" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="Cp5r7pfQ2zQS" documentation="" showscope="1" snapgrid="0" showatts="1" type="6">
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="node-irc" font="Sans Serif,9,-1,0,50,0,0,0,0,0" canvasheight="1100" canvaswidth="1468" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="81" xmi.id="Cp5r7pfQ2zQS" documentation="" showscope="1" snapgrid="0" showatts="1" type="6">
         <widgets>
          <activitywidget linecolor="none" usesdiagramfillcolor="1" linewidth="none" usesdiagramusefillcolor="1" x="515" showstereotype="1" y="56" font="Sans Serif,9,-1,0,50,0,0,0,0,0" width="23" isinstance="0" usefillcolor="1" fillcolor="none" activityname="" xmi.id="6VnlyvIm9Pci" postcondition="" documentation="" activitytype="0" height="23" precondition=""/>
          <notewidget width="50" showstereotype="1" x="598" noteType="0" y="66" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="50" linecolor="none" xmi.id="9Xk8vvxyk3nN" usefillcolor="1" linewidth="none" font="Sans Serif,9,-1,0,50,0,0,0,0,0" text=""/>
@@ -263,6 +271,38 @@
          </assocwidget>
         </associations>
        </diagram>
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="module processing" font="Sans Serif,9,-1,0,50,0,0,0,0,0" canvasheight="558" canvaswidth="1206" localid="TT4ytHPX70eG" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="V829bAwJ7feW" documentation="" showscope="1" snapgrid="0" showatts="1" type="3">
+        <widgets>
+         <objectwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" usesdiagramusefillcolor="1" instancename="irc" x="332" decon="0" showstereotype="1" y="48" font="Sans Serif,9,-1,0,50,0,1,0,0,0" localid="qtL2R8frCKNV" width="131" isinstance="0" multipleinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="wABxvZ1mg0Gh" height="24" drawasactor="0"/>
+         <objectwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" usesdiagramusefillcolor="1" instancename="irc" x="484" decon="0" showstereotype="1" y="48" font="Sans Serif,9,-1,0,50,0,1,0,0,0" localid="1HHhHYN7Pg8o" width="87" isinstance="0" multipleinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="L4eHQTGLcRIX" height="24" drawasactor="0"/>
+         <objectwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" usesdiagramusefillcolor="1" instancename="irc" x="590" decon="0" showstereotype="1" y="48" font="Sans Serif,9,-1,0,50,0,1,0,0,0" localid="YurAL7gKPx0g" width="70" isinstance="0" multipleinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="olg153UO67fW" height="24" drawasactor="0"/>
+         <objectwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" usesdiagramusefillcolor="1" instancename="irc" x="742" decon="0" showstereotype="1" y="48" font="Sans Serif,9,-1,0,50,0,1,0,0,0" localid="glJH68wVO0ym" width="69" isinstance="0" multipleinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="ylDNhB2AWo3V" height="24" drawasactor="0"/>
+         <objectwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" usesdiagramusefillcolor="1" instancename="irc" x="868" decon="0" showstereotype="1" y="48" font="Sans Serif,9,-1,0,50,0,1,0,0,0" localid="S9MwvPSZ8loF" width="102" isinstance="0" multipleinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="fyhEnl6lWJ7D" height="24" drawasactor="0"/>
+         <objectwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" usesdiagramusefillcolor="1" instancename="" x="778" decon="0" showstereotype="1" y="48" font="Sans Serif,9,-1,0,50,0,1,0,0,0" localid="i9x0G9QNVNIs" width="77" isinstance="0" multipleinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="liGjh0OdgcQR" height="24" drawasactor="0"/>
+         <objectwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" usesdiagramusefillcolor="1" instancename="" x="40" decon="0" showstereotype="1" y="48" font="Sans Serif,9,-1,0,50,0,1,0,0,0" localid="TT4ytHPX70eG" width="69" isinstance="0" multipleinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="YcXlkodSPaJe" height="24" drawasactor="0"/>
+         <floatingtext linecolor="none" usesdiagramfillcolor="1" linewidth="none" usesdiagramusefillcolor="1" x="106" showstereotype="1" y="113" text="session" font="Sans Serif,9,-1,0,50,0,0,0,0,0" pretext="" role="700" width="51" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="7GLs5adMJpuB" height="18"/>
+        </widgets>
+        <messages>
+         <messagewidget linecolor="none" usesdiagramfillcolor="1" widgetbid="1HHhHYN7Pg8o" textid="bKyeGmKczWGo" operation="session, server, port, password, nick, usrename, realname" linewidth="none" seqnum="2" usesdiagramusefillcolor="1" x="75" showstereotype="1" y="174" widgetaid="TT4ytHPX70eG" font="Sans Serif,9,-1,0,50,0,0,0,0,0" width="451" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="VI19WhaWPJ8u" height="8" sequencemessagetype="1001">
+          <floatingtext linecolor="none" usesdiagramfillcolor="1" linewidth="none" usesdiagramusefillcolor="1" x="80" showstereotype="1" y="156" text="2: session, server, port, password, nick, usrename, realname" font="Sans Serif,9,-1,0,50,0,0,0,0,0" pretext="" role="704" width="375" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="bKyeGmKczWGo" height="18"/>
+         </messagewidget>
+         <messagewidget linecolor="none" usesdiagramfillcolor="1" widgetbid="YurAL7gKPx0g" textid="8Z3ggxYtkzQW" operation="session" linewidth="none" seqnum="3" usesdiagramusefillcolor="1" x="75" showstereotype="1" y="225" widgetaid="TT4ytHPX70eG" font="Sans Serif,9,-1,0,50,0,0,0,0,0" width="549" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="bI6y0uJqiAzY" height="8" sequencemessagetype="1001">
+          <floatingtext linecolor="none" usesdiagramfillcolor="1" linewidth="none" usesdiagramusefillcolor="1" x="80" showstereotype="1" y="207" text="3: session" font="Sans Serif,9,-1,0,50,0,0,0,0,0" pretext="" role="704" width="67" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="8Z3ggxYtkzQW" height="18"/>
+         </messagewidget>
+         <messagewidget linecolor="none" usesdiagramfillcolor="1" widgetbid="qtL2R8frCKNV" textid="a0UXYc6bJlWp" operation="callbacks" linewidth="none" seqnum="1" usesdiagramusefillcolor="1" x="74" showstereotype="1" y="95" widgetaid="TT4ytHPX70eG" font="Sans Serif,9,-1,0,50,0,0,0,0,0" width="331" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="0RXTL8lP5lHM" height="32" sequencemessagetype="1000">
+          <floatingtext linecolor="none" usesdiagramfillcolor="1" linewidth="none" usesdiagramusefillcolor="1" x="79" showstereotype="1" y="77" text="1: callbacks" font="Sans Serif,9,-1,0,50,0,0,0,0,0" pretext="" role="704" width="79" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="a0UXYc6bJlWp" height="18"/>
+         </messagewidget>
+        </messages>
+        <associations/>
+       </diagram>
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="objects" font="Sans Serif,9,-1,0,50,0,0,0,0,0" canvasheight="558" canvaswidth="1206" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="o4tfCURD45ku" documentation="" showscope="1" snapgrid="0" showatts="1" type="1">
+        <widgets>
+         <packagewidget width="132" showstereotype="1" x="237" y="195" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="38" linecolor="none" xmi.id="t8fKuASvI35E" usefillcolor="1" linewidth="none" font="Sans Serif,9,-1,0,75,0,0,0,0,0"/>
+         <packagewidget width="79" showstereotype="1" x="499" y="195" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="38" linecolor="none" xmi.id="KBszhg1YLD2n" usefillcolor="1" linewidth="none" font="Sans Serif,9,-1,0,75,0,0,0,0,0"/>
+        </widgets>
+        <messages/>
+        <associations/>
+       </diagram>
       </diagrams>
      </XMI.extension>
     </UML:Model>
@@ -282,13 +322,27 @@
   </UML:Model>
  </XMI.content>
  <XMI.extensions xmi.extender="umbrello">
-  <docsettings viewid="Cp5r7pfQ2zQS" uniqueid="u2UjoSYSM7Sw" documentation=""/>
+  <docsettings viewid="V829bAwJ7feW" uniqueid="7GLs5adMJpuB" documentation=""/>
   <listview>
    <listitem open="1" type="800" id="Views">
     <listitem open="1" type="801" id="Logical View">
-     <listitem open="0" type="807" id="BV3rjfCqOB64" label="class diagram"/>
+     <listitem open="0" type="807" id="o4tfCURD45ku" label="objects"/>
      <listitem open="0" type="809" id="Cp5r7pfQ2zQS" label="node-irc"/>
-     <listitem open="0" type="810" id="v4jHvQ9hU7A2" label="Node-IRC"/>
+     <listitem open="0" type="810" id="V829bAwJ7feW" label="module processing"/>
+     <listitem open="1" type="813" id="L4eHQTGLcRIX"/>
+     <listitem open="1" type="813" id="wABxvZ1mg0Gh"/>
+     <listitem open="1" type="813" id="ylDNhB2AWo3V"/>
+     <listitem open="1" type="813" id="YcXlkodSPaJe"/>
+     <listitem open="1" type="813" id="olg153UO67fW"/>
+     <listitem open="1" type="813" id="fyhEnl6lWJ7D"/>
+     <listitem open="1" type="813" id="AcvMDdFoxFcB"/>
+     <listitem open="1" type="813" id="ugxgOgkCpAUL"/>
+     <listitem open="1" type="813" id="tcJ2qGFiuCOI"/>
+     <listitem open="1" type="813" id="pr1YeGQPyg8d"/>
+     <listitem open="1" type="813" id="o9SJWiCLYDtC"/>
+     <listitem open="1" type="813" id="liGjh0OdgcQR"/>
+     <listitem open="1" type="818" id="t8fKuASvI35E"/>
+     <listitem open="1" type="818" id="KBszhg1YLD2n"/>
      <listitem open="0" type="830" id="Datatypes">
       <listitem open="1" type="829" id="zPV3WwQpq9Se"/>
       <listitem open="1" type="829" id="dIMmnQdU3oLR"/>
