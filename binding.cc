@@ -1,24 +1,26 @@
 #include <node.h>
 #include <stdio.h>
-#include <node.h>
+#include <node.h> 
 #include <node_events.h> 
+#include <pthread.h>
 #include <libircclient/libircclient.h>
 #define V8STR String::AsciiValue
 
 using namespace v8; 
 void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
 void con_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
+void *run_thr(void *vptr_args);
+void con_cb_ev(EV_P_ ev_async *watcher, int revents);
 
-Persistent<Function> RecCB; Persistent<Function> ConCB; 
+Persistent<Function> RecCB; 
+Persistent<Function> ConCB; 
 irc_callbacks_t _callbacks;
 irc_session_t *_session;
-bool _connected = false;
-
+struct ev_async eio_nt;
 
 //JS equivalent for irc_create_session command
 //parameters:
-//CreateSession(Function RecCB, Function ConCB)
-//RecCB - a callback function for recieving a message from some user to channel/personally
+//CreateSession(Function RecCB, Function ConCB) //RecCB - a callback function for recieving a message from some user to channel/personally
 //ConCB - a callback for "connected" event on IRC server
 static Handle<Value> CreateSession(const Arguments &args)
 {
@@ -62,9 +64,16 @@ static Handle<Value> Connect(const Arguments &args)
 //JS equivalent for irc_run command
 //parameters:
 //No
-static Handle<Value> Run(const Arguments &args) {
-	printf("Running irc session\n");
-	printf("run: %d", irc_run(_session));
+static Handle<Value> Run(const Arguments &args)
+{
+	pthread_t thread;
+	//pthread_t looper;
+	ev_async_init(&eio_nt, con_cb_ev);
+	ev_async_start(EV_DEFAULT_UC_ &eio_nt);
+	pthread_create(&thread, NULL, run_thr, NULL);
+	ev_loop(EV_DEFAULT_ 0);
+	printf("works after loop!\n");
+	pthread_join(thread, NULL);
 }
 
 //JS equivalent for irc_cmd_join command
@@ -81,13 +90,19 @@ static Handle<Value> Join(const Arguments &args)
 //JS equivalent for irc_cmd_msg command
 //parameters:
 //SendMsg(String dest, String text)
-
 static Handle<Value> SendMsg(const Arguments &args)
 {
 	printf("Sending message...\n");
 	V8STR chan(args[0]);
 	V8STR message(args[1]);
 	irc_cmd_msg(_session, *chan, *message);
+}
+
+void *run_thr(void *vptr_args)
+{
+	HandleScope scope;
+	printf("Running irc session\n");
+	printf("run: %d", irc_run(_session));
 }
 
 void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
@@ -104,7 +119,13 @@ void rec_cb(irc_session_t *session, const char *event, const char *origin, const
 
 void con_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
-	if (RecCB->IsFunction())
+	printf("connected\n");
+	ev_async_send(EV_DEFAULT_UC_ &eio_nt);
+}
+
+void con_cb_ev(EV_P_ ev_async *watcher, int revents)
+{
+	if (ConCB->IsFunction())
 	{
 		Handle<Object> tmp = Object::New();
 		ConCB->Call(tmp, 0, NULL);
