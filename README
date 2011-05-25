@@ -23,12 +23,13 @@ Simple binding of libircclient for node.js.
 	20.04.11:	Persistent callback functions done. Now we can describe callbacks directly from javascript
 	25.04.11: 	Functions SendMsg, Join done, now everything can be done directly from JS
 	27.04.11:	All about IRC events now works in another thread. ConnectCallback is working. Everything works in parallel with nodejs event loop. Web server and irc connection in example test.js
+	28.04.11: 	RecievedCallback events. 
 -----------------------------------------------
 3. FUNCTIONS DESCRIPTION
 This is the list of most common libircclient functions musthave in our implementation
     + irc_session_t* irc_create_session (irc_callback_t* callbacks)
         """Creates and initiates a new IRC session.
-    + irc_destroy_session(irc_session_t* session)
+    + irc_destroy_session(irc_session_t* seshsion)
         """Destroys session
     + irc_connect(session, server, port, password, nick, uname, realname)
         """Initiates a connection to IRC server

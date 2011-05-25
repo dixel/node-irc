@@ -7,16 +7,25 @@
 #define V8STR String::AsciiValue
 
 using namespace v8; 
+
+typedef struct message
+{
+	const char *origin;
+	const char **params;
+} mess;
+
 void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
 void con_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
 void *run_thr(void *vptr_args);
 void con_cb_ev(EV_P_ ev_async *watcher, int revents);
+void rec_cb_ev(EV_P_ ev_async *watcher, int revents);
 
 Persistent<Function> RecCB; 
 Persistent<Function> ConCB; 
 irc_callbacks_t _callbacks;
 irc_session_t *_session;
 struct ev_async eio_nt;
+struct ev_async eio_rc;
 
 //JS equivalent for irc_create_session command
 //parameters:
@@ -42,8 +51,7 @@ static Handle<Value> CreateSession(const Arguments &args)
 		if (reccb->IsFunction())
 		{
 			RecCB = Persistent<Function>::New(reccb);
-		}
-	}
+		} }
 }
 
 //JS equivalent for irc_connect command
@@ -70,6 +78,8 @@ static Handle<Value> Run(const Arguments &args)
 	//pthread_t looper;
 	ev_async_init(&eio_nt, con_cb_ev);
 	ev_async_start(EV_DEFAULT_UC_ &eio_nt);
+	ev_async_init(&eio_rc, rec_cb_ev);
+	ev_async_start(EV_DEFAULT_UC_ &eio_rc);
 	pthread_create(&thread, NULL, run_thr, NULL);
 	ev_loop(EV_DEFAULT_ 0);
 	printf("works after loop!\n");
@@ -107,20 +117,31 @@ void *run_thr(void *vptr_args)
 
 void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
-	Handle<Value> args[2];
-	args[0] = String::New(origin);
-	args[1] = String::New(params[1]);
-	if (RecCB->IsFunction())
-	{
-		Handle<Object> tmp = Object::New();
-		RecCB->Call(tmp, 2, args);
-	}
+	mess *newm;
+	newm->origin = origin;
+	newm->params = params;
+	ev_set_userdata(newm);
+	ev_async_send(EV_DEFAULT_UC_ &eio_rc);
 }
 
 void con_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
 	printf("connected\n");
 	ev_async_send(EV_DEFAULT_UC_ &eio_nt);
+}
+
+void rec_cb_ev(EV_P_ ev_async *watcher, int revents)
+{
+	mess *parser;
+	parser = (mess *)ev_userdata();
+	Handle<Value> args[2];
+	args[0] = String::New(parser->origin);
+	args[1] = String::New(parser->params[1]);
+	if (RecCB->IsFunction())
+	{
+		Handle<Object> tmp = Object::New();
+		RecCB->Call(tmp, 2, args);
+	}
 }
 
 void con_cb_ev(EV_P_ ev_async *watcher, int revents)
