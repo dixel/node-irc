@@ -1,0 +1,23 @@
+digraph G
+{
+	ircs[label="IRC Server"];
+	lic[label="libircclient"];
+	le[label="libev"];
+	icbchan[label="event_channel(..)"];
+	irccon[label="irc_connect(..)"];
+	sndwch[label="send_watcher(..)"];
+	rcvwch[label="recieve_watcher(..)"];
+	nodejs[label="node.js\n var nodeirc=require('node-irc');\n...\n______________________________________________________\n  - Recieve POST requests from user\n - Send corresponding answer"];
+	webui[label="Web interface\n_______________________________________________________________________________\nmessages window\njavascript for POSTing every n'th seconds\n\n\n________________________________________________________________________________\ninput form\n_______________________________________________________________________________\n|send|connect|"];
+	v8[label="V8 object templates, handles,\n function templates"];
+	queu[label="<f0>message queu||||" shape="record"];
+	webui->nodejs[label="POST request\n____________\nresponse" dir="both"];
+	nodejs->v8[dir="both"];
+	v8->irccon;
+	v8->sndwch->le->lic->ircs;
+	ircs->lic->icbchan->rcvwch->queu->v8;
+	rcvwch->le;
+	irccon->lic;
+
+	
+}

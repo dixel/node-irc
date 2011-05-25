@@ -45,8 +45,7 @@ static Handle<Value> CreateSession(const Arguments &args)
             ConCB = Persistent<Function>::New(concb);
         }
     }
-    if (args[1]->IsFunction()) 
-    { 
+    if (args[1]->IsFunction()) { 
         Local<Function> reccb = Function::Cast(*args[1]);
         if (reccb->IsFunction())
         {
@@ -75,7 +74,6 @@ static Handle<Value> Connect(const Arguments &args)
 static Handle<Value> Run(const Arguments &args)
 {
     pthread_t thread;
-    //pthread_t looper;
     ev_async_init(&eio_nt, con_cb_ev);
     ev_async_start(EV_DEFAULT_UC_ &eio_nt);
     ev_async_init(&eio_rc, rec_cb_ev);
@@ -117,9 +115,11 @@ void *run_thr(void *vptr_args)
 
 void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
-    mess *newm;
+    mess *newm = new mess;
     newm->origin = origin;
     newm->params = params;
+    printf("recieved callback\n");
+    printf("recieved callback\n");
     ev_set_userdata(newm);
     ev_async_send(EV_DEFAULT_UC_ &eio_rc);
 }
