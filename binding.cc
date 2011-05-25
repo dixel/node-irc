@@ -5,14 +5,34 @@
 #include <libircclient/libircclient.h>
 
 #define V8STR String::AsciiValue
+
+using namespace v8;
+
 void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
 void con_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
+
+Local<Value> RecCB;
+Local<Value> ConCB;
 
 irc_callbacks_t _callbacks;
 irc_session_t *_session;
 bool _connected = false;
 
-using namespace v8;
+
+//JS equivalent for irc_create_session command on libircclient lib
+//parameters:
+//CreateSession(Function RecCB, Function ConCB)
+//RecCB - a callback function for recieving a message from some user to channel/personally
+//ConCB - a callback for "connected" event on IRC server
+static Handle<Value> CreateSession(const Arguments &args)
+{
+	printf("Create session\n");
+	_callbacks.event_channel = rec_cb;
+	_callbacks.event_connect = con_cb;
+	_session = irc_create_session(&_callbacks);
+	RecCB = args[0];
+	ConCB = args[1];
+}
 
 //JS equivalent for connect command on libircclient lib
 //parameters:
@@ -20,9 +40,6 @@ using namespace v8;
 static Handle<Value> Connect(const Arguments &args)
 {
 	printf("Connect action\n");
-	_callbacks.event_channel = rec_cb;
-	_callbacks.event_connect = con_cb;
-	_session = irc_create_session(&_callbacks);
 	V8STR server(args[0]);
 	int port = args[1]->Int32Value();
 	V8STR password(args[2]);
@@ -74,5 +91,6 @@ init (Handle<Object> target)
 	Local<Template> proto_t = t->PrototypeTemplate();
 	proto_t->Set("Connect", FunctionTemplate::New(Connect));
 	proto_t->Set("Run", FunctionTemplate::New(Run));
+	proto_t->Set("CreateSession", FunctionTemplate::New(CreateSession));
 	target->Set(String::NewSymbol("func"), t->GetFunction());
 }
