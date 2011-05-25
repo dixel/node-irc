@@ -21,6 +21,7 @@ Simple binding of libircclient for node.js.
 	19.04.11:	Working tests: sending and recieving messages via console works well. Handling connected/recieved message events. New design of main module file (binding.cc)
 	20.04.11:	CreateSession function prototype done. Arguments now are two callback functions
 	20.04.11:	Persistent callback functions done. Now we can describe callbacks directly from javascript
+	25.04.11: 	Functions SendMsg, Join done, now everything can be done directly from JS
 -----------------------------------------------
 3. FUNCTIONS DESCRIPTION
 This is the list of most common libircclient functions musthave in our implementation
