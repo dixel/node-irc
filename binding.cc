@@ -65,7 +65,7 @@ static Handle<Value> CreateSession(const Arguments &args)
     if(wecandoit)
     {
         _session[sess_id] = irc_create_session(&_callbacks);
-        irc_set_ctx(_session[sess_id], (void *) sess_id);
+        irc_set_ctx(_session[sess_id], new int(sess_id));
         return(Integer::New(0));
     }
     else
@@ -102,7 +102,7 @@ static Handle<Value> Run(const Arguments &args)
     ev_async_start(EV_DEFAULT_UC_ &eio_nt);
     ev_async_init(&eio_rc, rec_cb_ev);
     ev_async_start(EV_DEFAULT_UC_ &eio_rc);
-    pthread_create(&thread, NULL, run_thr, (void *) sess_id);
+    pthread_create(&thread, NULL, run_thr, new int (sess_id));
     ev_loop(EV_DEFAULT_ EVLOOP_NONBLOCK);
 }
 
@@ -132,15 +132,16 @@ static Handle<Value> SendMsg(const Arguments &args)
 
 void *run_thr(void *vptr_args)
 {
-    printf("DEBUG:: run_thr\n");
-    irc_run(_session[(int)vptr_args]);
+    printf("DEBUG:: run_thr\n sess_id = %d\n", *reinterpret_cast<int*>(vptr_args));
+    irc_run(_session[*reinterpret_cast<int*>(vptr_args)]);
+    delete reinterpret_cast<int *>(vptr_args);
 }
 
 void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
     printf("DEBUG:: rec_cb\n");
     mess *newm = new mess;
-    newm->session = (int) irc_get_ctx(session);
+    newm->session = *reinterpret_cast<int *>(irc_get_ctx(session));
     newm->origin = origin;
     newm->params = params;
     ev_set_userdata(newm);
@@ -173,7 +174,7 @@ void rec_cb_ev(EV_P_ ev_async *watcher, int revents)
 void con_cb_ev(EV_P_ ev_async *watcher, int revents)
 {
     Handle<Value> args[0];
-    args[0] = Integer::New((int) ev_userdata());
+    args[0] = Integer::New(*reinterpret_cast<int*>(ev_userdata()));
     printf("DEBUG:: con_cb_ev\n");
     if (ConCB->IsFunction())
     {

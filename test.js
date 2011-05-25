@@ -34,6 +34,10 @@ function RecieveCallback(session, origin, message)
     {
         msgq = msgq + "<b>"+ origin.match(nickrx)+"</b>: " + message + "<br>";
     }
+    if(session == 2)
+    {
+        irc.SendMsg(session, chan, origin.match(nickrx)+", you're so cute!");
+    }
 }
 
 http.createServer(function(request, response){
