@@ -16,14 +16,14 @@ Simple binding of libircclient for node.js.
 -----------------------------------------------
 2. COMMIT HISTORY
     10.03.11:   First commit: README, package.json files, TODO list
-	17.03.11:	Added accessors for channel connection processing
-	12.04.11:	Testing environment for libircclient and libev - testirc
-	19.04.11:	Working tests: sending and recieving messages via console works well. Handling connected/recieved message events. New design of main module file (binding.cc)
-	20.04.11:	CreateSession function prototype done. Arguments now are two callback functions
-	20.04.11:	Persistent callback functions done. Now we can describe callbacks directly from javascript
-	25.04.11: 	Functions SendMsg, Join done, now everything can be done directly from JS
-	27.04.11:	All about IRC events now works in another thread. ConnectCallback is working. Everything works in parallel with nodejs event loop. Web server and irc connection in example test.js
-	28.04.11: 	RecievedCallback events. Testing Web-page on 127.0.0.1:8100 - wait for connection to be viewed from console. Everything works fine, but we need a new arquitect to hold many irc connections. For showtime - small javascript which populates the page with new irc messages.
+    17.03.11:   Added accessors for channel connection processing
+    12.04.11:   Testing environment for libircclient and libev - testirc
+    19.04.11:   Working tests: sending and recieving messages via console works well. Handling connected/recieved message events. New design of main module file (binding.cc)
+    20.04.11:   CreateSession function prototype done. Arguments now are two callback functions
+    20.04.11:   Persistent callback functions done. Now we can describe callbacks directly from javascript
+    25.04.11:   Functions SendMsg, Join done, now everything can be done directly from JS
+    27.04.11:   All about IRC events now works in another thread. ConnectCallback is working. Everything works in parallel with nodejs event loop. Web server and irc connection in example test.js
+    28.04.11:   RecievedCallback events. Testing Web-page on 127.0.0.1:8100 - wait for connection to be viewed from console. Everything works fine, but we need a new arquitect to hold many irc connections. For showtime - small javascript which populates the page with new irc messages.
 -----------------------------------------------
 3. FUNCTIONS DESCRIPTION
 This is the list of most common libircclient functions musthave in our implementation
