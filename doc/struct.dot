@@ -2,22 +2,45 @@ digraph G
 {
 	ircs[label="IRC Server"];
 	lic[label="libircclient"];
-	le[label="libev"];
-	icbchan[label="event_channel(..)"];
-	irccon[label="irc_connect(..)"];
-	sndwch[label="send_watcher(..)"];
+    icon[label="connect(..)"];
+    icrs[label="create_session(callbacks ..)"];
+    irun[label="run(..)"];
+    isend[label="send(..)"];
+    ijoin[label="join(..)"];
+    runthr[label="irc_run thread", shape="box", fixedsize=true, width=15];
+    evloop[label="node.js event loop", shape="box", fixedsize=true, width=15];
+	icbchan[label="event_channel(..)\ncallback"];
+	icbcon[label="event_connect(..)\ncallback"];
 	rcvwch[label="recieve_watcher(..)"];
-	nodejs[label="node.js\n var nodeirc=require('node-irc');\n...\n______________________________________________________\n  - Recieve POST requests from user\n - Send corresponding answer"];
-	webui[label="Web interface\n_______________________________________________________________________________\nmessages window\njavascript for POSTing every n'th seconds\n\n\n________________________________________________________________________________\ninput form\n_______________________________________________________________________________\n|send|connect|"];
-	v8[label="V8 object templates, handles,\n function templates"];
-	queu[label="<f0>message queu||||" shape="record"];
-	webui->nodejs[label="POST request\n____________\nresponse" dir="both"];
-	nodejs->v8[dir="both"];
-	v8->irccon;
-	v8->sndwch->le->lic->ircs;
-	ircs->lic->icbchan->rcvwch->queu->v8;
-	rcvwch->le;
-	irccon->lic;
+	conwch[label="conect_watcher(..)"];
+    v8[label="v8 function prototypes", shape="ellipse", fixedsize=true, width=15];
+    jscb[label="javascript callbacks"];
 
-	
+    lic->ircs[dir="both"];
+    lic->icbchan;
+    lic->icbcon;
+    icon->lic;
+    irun->lic;
+    ijoin->lic;
+    isend->lic;
+
+
+    v8->jscb;
+    v8->icon;
+    v8->irun;
+    v8->ijoin;
+    v8->isend;
+    v8->icrs;
+
+    evloop->v8;
+    rcvwch->jscb;
+    conwch->jscb;
+
+    icbchan->runthr;
+    icbcon->runthr;
+    runthr->rcvwch;
+    runthr->conwch;
+
+    
+    runthr->irun[dir="back"];
 }

@@ -1,0 +1,31 @@
+Use this module:
+    npm install
+    var nodeirc = require('way to binding.node - ./build/default/binding by default')
+    irc = nodeirc.func.prototype;
+
+irc.CreateSession(function RecCB, function ConCB);
+JS equivalent for irc_create_session command
+//parameters:
+//CreateSession(Function RecCB, Function ConCB) 
+//RecCB(string origin, string message) - a callback function for recieving a message from some user to channel/personally
+//ConCB() - a callback for "connected" event on IRC server
+
+irc.Connect(string server, integer port, string password, string nick, string username, string realname);
+JS equivalent for irc_connect command
+//parameters:
+//Connect(String server, Number port, String password, String nick, String username, String realname)
+
+irc.Run();
+//JS equivalent for irc_run command
+//parameters:
+//No
+
+Join(string channel, string key)
+JS equivalent for irc_cmd_join command
+//parameters:
+//Join(String channel, String key)
+
+SendMsg(string dest, string text)
+JS equivalent for irc_cmd_msg command
+//parameters:
+//SendMsg(String dest, String text)
