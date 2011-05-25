@@ -1,4 +1,4 @@
-:ode-irc
+:node-irc
 Simple binding of libircclient for node.js.
 
 -----------------------------------------------
@@ -19,6 +19,8 @@ Simple binding of libircclient for node.js.
 	17.03.11:	Added accessors for channel connection processing
 	12.04.11:	Testing environment for libircclient and libev - testirc
 	19.04.11:	Working tests: sending and recieving messages via console works well. Handling connected/recieved message events. New design of main module file (binding.cc)
+	20.04.11:	CreateSession function prototype done. Arguments now are two callback functions
+	20.04.11:	Persistent callback functions done. Now we can describe callbacks directly from javascript
 -----------------------------------------------
 3. FUNCTIONS DESCRIPTION
 This is the list of most common libircclient functions musthave in our implementation

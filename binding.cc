@@ -3,16 +3,14 @@
 #include <node.h>
 #include <node_events.h> 
 #include <libircclient/libircclient.h>
-
 #define V8STR String::AsciiValue
 
-using namespace v8;
-
+using namespace v8; 
 void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
 void con_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
 
-Local<Value> RecCB;
-Local<Value> ConCB;
+Persistent<Function> RecCB;
+Persistent<Function> ConCB;
 
 irc_callbacks_t _callbacks;
 irc_session_t *_session;
@@ -30,8 +28,22 @@ static Handle<Value> CreateSession(const Arguments &args)
 	_callbacks.event_channel = rec_cb;
 	_callbacks.event_connect = con_cb;
 	_session = irc_create_session(&_callbacks);
-	RecCB = args[0];
-	ConCB = args[1];
+	if (args[0]->IsFunction()) 
+	{ 
+		Local<Function> concb = Function::Cast(*args[0]);
+		if (concb->IsFunction())
+		{
+			ConCB = Persistent<Function>::New(concb);
+		}
+	}
+	if (args[1]->IsFunction()) 
+	{ 
+		Local<Function> reccb = Function::Cast(*args[1]);
+		if (reccb->IsFunction())
+		{
+			RecCB = Persistent<Function>::New(reccb);
+		}
+	}
 }
 
 //JS equivalent for connect command on libircclient lib
@@ -52,8 +64,7 @@ static Handle<Value> Connect(const Arguments &args)
 //JS equivalent for irc_run command on libircclient lib
 //parameters:
 //No
-static Handle<Value> Run(const Arguments &args)
-{
+static Handle<Value> Run(const Arguments &args) {
 	printf("Run action\n");
 	printf("run: %d", irc_run(_session));
 }
@@ -72,11 +83,22 @@ static Handle<Value> Join(const Arguments &args)
 void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
 	printf("NEW MESSAGE!\n%s: %s\n", origin, params[1]);
+	if (RecCB->IsFunction())
+	{
+		Handle<Object> tmp = Object::New();
+		RecCB->Call(tmp, 0, NULL);
+	}
 }
 
 void con_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
 	printf("CONNECTED!\n");
+	if (RecCB->IsFunction())
+	{
+		Handle<Object> tmp = Object::New();
+		ConCB->Call(tmp, 0, NULL);
+	}
+
 	_connected = true;
 	printf("join: %d\n", irc_cmd_join(_session, "#newchan", NULL));
 	irc_cmd_msg(_session, "#newchan", "HeLlO WoRlD!");
