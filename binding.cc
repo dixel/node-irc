@@ -29,27 +29,40 @@ struct ev_async eio_rc;
 
 //JS equivalent for irc_create_session command
 //parameters:
-//CreateSession(Function RecCB, Function ConCB) //RecCB - a callback function for recieving a message from some user to channel/personally
+//CreateSession(Integer SessionID, Function RecCB, Function ConCB) //RecCB - a callback function for recieving a message from some user to channel/personally
 //ConCB - a callback for "connected" event on IRC server
 static Handle<Value> CreateSession(const Arguments &args)
 {
     _callbacks.event_channel = rec_cb;
     _callbacks.event_connect = con_cb;
-    _session = irc_create_session(&_callbacks);
-    if (args[0]->IsFunction()) 
-    { 
-        Local<Function> concb = Function::Cast(*args[0]);
-        if (concb->IsFunction())
+    bool wecandoit = false;
+    if (args[0]->IsObject())
+    {
+        Local<Object> sess = Object::Cast(*args[0]);
+        if(sess->Has(String::New("sessionId")))
         {
+            _session = irc_create_session(&_callbacks);
+            wecandoit = true;
+        }
+        if(sess->Has(String::New("connectCallback")))
+        {
+            Local<Function> concb = Function::Cast(*(sess->Get(String::New("connectCallback"))));
             ConCB = Persistent<Function>::New(concb);
         }
-    }
-    if (args[1]->IsFunction()) { 
-        Local<Function> reccb = Function::Cast(*args[1]);
-        if (reccb->IsFunction())
+        if(sess->Has(String::New("recieveCallback")))
         {
+            Local<Function> reccb = Function::Cast(*(sess->Get(String::New("recieveCallback"))));
             RecCB = Persistent<Function>::New(reccb);
-        } }
+        }
+    }
+    if(wecandoit)
+    {
+        return(Integer::New(0));
+    }
+    else
+    {
+        return(Integer::New(1));
+    }
 }
 
 //JS equivalent for irc_connect command

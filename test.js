@@ -10,6 +10,7 @@ var con = '</td></tr></table> <form method="get"> <input type="text" name="msg" 
 var tab = '<table noshade border=1 cellspacing=0 cellpadding=0 width=100%><tr><td><p align=center><b>irc.freenode.net #test_node</b></p>'
 var nick = 'default_node_irc';
 var serv = 'irc.freenode.net';
+var chan = '#test_node';
 
 var msgq = "";
 var connected = 4;
@@ -21,7 +22,7 @@ function ConnectCallback()
 {
     console.log('Connected to server, attempting to join...');
     irc.SendMsg("dixel", "<here I am>");
-    irc.Join("#test_node", "");
+    irc.Join(chan, "");
     connected = 2;
 }
 
@@ -39,7 +40,7 @@ http.createServer(function(request, response){
         if(query.query.submit == 'Send')
         {
             console.log('attempting to send a message');
-            irc.SendMsg("#test_node", query.query.msg);
+            irc.SendMsg(chan, query.query.msg);
             response.writeHead(200, {"Content-Type": "text/html"});
             response.write(hr_ref, encoding = 'utf-8');
             response.write(tab, encoding = 'utf-8');
@@ -50,9 +51,16 @@ http.createServer(function(request, response){
 
         else if (query.query.submit == 'Connect' && connected == 4)
         {
-            irc.CreateSession(ConnectCallback, RecieveCallback);
-            irc.Connect("irc.freenode.net", 6667, null, nick, null, null);
+            var x = new Object();
+            x.sessionId = 1;
+            x.recieveCallback = RecieveCallback;
+            x.connectCallback = ConnectCallback;
+            irc.CreateSession(x);
+            //irc.CreateSession(ConnectCallback, RecieveCallback);
+            irc.Connect(serv, 6667, null, nick, null, null);
+            console.log('connected');
             irc.Run();
+            console.log('runned');
             connected = 3;
             response.writeHead(200, {"Content-Type": "text/html"});
             response.write(hr_ref, encoding = 'utf-8');
