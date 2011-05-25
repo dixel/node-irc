@@ -28,6 +28,7 @@ Simple binding of libircclient for node.js.
     11.05.11:   Many fixes, function Run() now works fine and is non-blocking. Time to begin with lots of sessions.
     16.05.11:   All callbacks for irc.SessionCreate(x) now are in a JavaScript object x.
     17.05.11:   Works with multiple sessions!
+    17.05.11:   Two users in test.js: one for web-ui and one just bot.
 -----------------------------------------------
 3. FUNCTIONS DESCRIPTION
 This is the list of most common libircclient functions musthave in our implementation

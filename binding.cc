@@ -32,8 +32,10 @@ struct ev_async eio_rc;
 
 //JS equivalent for irc_create_session command
 //parameters:
-//CreateSession(Integer SessionID, Function RecCB, Function ConCB) //RecCB - a callback function for recieving a message from some user to channel/personally
-//ConCB - a callback for "connected" event on IRC server
+//CreateSession(Object session) 
+//session.sessionId - integer indentifier of the session, should be [0-MAXLEN], watch it to be unique
+//session.RecCB - a callback function for recieving a message from some user to channel/personally
+//session.ConCB - a callback for "connected" event on IRC server
 static Handle<Value> CreateSession(const Arguments &args)
 {
     printf("DEBUG:: createsession\n");
@@ -90,7 +92,7 @@ static Handle<Value> Connect(const Arguments &args)
 
 //JS equivalent for irc_run command
 //parameters:
-//No
+//Run(Number session)
 static Handle<Value> Run(const Arguments &args)
 {
     printf("DEBUG:: run\n");
@@ -106,7 +108,7 @@ static Handle<Value> Run(const Arguments &args)
 
 //JS equivalent for irc_cmd_join command
 //parameters:
-//Join(String channel, String key)
+//Join(Number session, String channel, String key)
 static Handle<Value> Join(const Arguments &args)
 {
     printf("DEBUG:: join\n");
@@ -118,7 +120,7 @@ static Handle<Value> Join(const Arguments &args)
 
 //JS equivalent for irc_cmd_msg command
 //parameters:
-//SendMsg(String dest, String text)
+//SendMsg(Number session, String dest, String text)
 static Handle<Value> SendMsg(const Arguments &args)
 {
     printf("DEBUG:: sendmsg\n");
@@ -170,11 +172,13 @@ void rec_cb_ev(EV_P_ ev_async *watcher, int revents)
 
 void con_cb_ev(EV_P_ ev_async *watcher, int revents)
 {
-    printf("DEBUG:: con_cb_ev, session = %d\n", (int) ev_userdata());
+    Handle<Value> args[0];
+    args[0] = Integer::New((int) ev_userdata());
+    printf("DEBUG:: con_cb_ev\n");
     if (ConCB->IsFunction())
     {
         Handle<Object> tmp = Object::New();
-        ConCB->Call(tmp, 0, NULL);
+        ConCB->Call(tmp, 1, args);
     }
 }
 

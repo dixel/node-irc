@@ -18,20 +18,22 @@ var nickrx = /.+(?=!)/;
 
 console.log('||||||||starting nodejs http server|||||||||||||');
 
-function ConnectCallback()
+function ConnectCallback(session)
 {
-    console.log('Connected to server, attempting to join...');
-    irc.SendMsg(1, "dixel", "<here I am>");
-    irc.SendMsg(2, "dixel", "<here I am>");
-    irc.Join(1, chan, "");
-    irc.Join(2, chan, "");
+    console.log('session #' + session + 'Connected to server, attempting to join...');
+    irc.SendMsg(session, "dixel", "<here I am>");
+    irc.Join(session, chan, "");
+    irc.SendMsg(2, chan, "Hello, I am just a bot here!");
     connected = 2;
 }
 
 function RecieveCallback(session, origin, message)
 {
     console.log('>%d %s: %s', session, origin, message);
-    msgq = msgq + "<b>"+ origin.match(nickrx)+"</b>: " + message + "<br>";
+    if(session == 1)
+    {
+        msgq = msgq + "<b>"+ origin.match(nickrx)+"</b>: " + message + "<br>";
+    }
 }
 
 http.createServer(function(request, response){
@@ -43,7 +45,6 @@ http.createServer(function(request, response){
         {
             console.log('attempting to send a message');
             irc.SendMsg(1, chan, query.query.msg);
-            irc.SendMsg(2, chan, query.query.msg);
             response.writeHead(200, {"Content-Type": "text/html"});
             response.write(hr_ref, encoding = 'utf-8');
             response.write(tab, encoding = 'utf-8');
