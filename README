@@ -1,4 +1,4 @@
-node-irc
+:ode-irc
 Simple binding of libircclient for node.js.
 
 -----------------------------------------------
@@ -8,6 +8,8 @@ Simple binding of libircclient for node.js.
 -----------------------------------------------
 1. PROJECT TODO
     1. Write implementations of libitcclient functions
+        - understanding v8 engine
+        - bind javascript code to libircclient functions call
     2. Compile binary module irc.node
     3. Write testing javascript
     4. Write simple web-face for irc-chatting
@@ -26,3 +28,4 @@ This is the list of most common libircclient functions musthave in our implement
     + irc_disconnect(irc_session_t* session)
     + irc_run(irc_session_t* session)
         """Goes into forever-loop, processing IRC events and generating callbacks
+    
