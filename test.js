@@ -21,14 +21,16 @@ console.log('||||||||starting nodejs http server|||||||||||||');
 function ConnectCallback()
 {
     console.log('Connected to server, attempting to join...');
-    irc.SendMsg("dixel", "<here I am>");
-    irc.Join(chan, "");
+    irc.SendMsg(1, "dixel", "<here I am>");
+    irc.SendMsg(2, "dixel", "<here I am>");
+    irc.Join(1, chan, "");
+    irc.Join(2, chan, "");
     connected = 2;
 }
 
-function RecieveCallback(origin, message)
+function RecieveCallback(session, origin, message)
 {
-    console.log('>%s: %s', origin, message);
+    console.log('>%d %s: %s', session, origin, message);
     msgq = msgq + "<b>"+ origin.match(nickrx)+"</b>: " + message + "<br>";
 }
 
@@ -40,7 +42,8 @@ http.createServer(function(request, response){
         if(query.query.submit == 'Send')
         {
             console.log('attempting to send a message');
-            irc.SendMsg(chan, query.query.msg);
+            irc.SendMsg(1, chan, query.query.msg);
+            irc.SendMsg(2, chan, query.query.msg);
             response.writeHead(200, {"Content-Type": "text/html"});
             response.write(hr_ref, encoding = 'utf-8');
             response.write(tab, encoding = 'utf-8');
@@ -52,14 +55,21 @@ http.createServer(function(request, response){
         else if (query.query.submit == 'Connect' && connected == 4)
         {
             var x = new Object();
+            var y = new Object();
             x.sessionId = 1;
             x.recieveCallback = RecieveCallback;
             x.connectCallback = ConnectCallback;
+            y.sessionId = 2;
+            y.recieveCallback = RecieveCallback;
+            y.connectCallback = ConnectCallback;
             irc.CreateSession(x);
+            irc.CreateSession(y);
             //irc.CreateSession(ConnectCallback, RecieveCallback);
-            irc.Connect(serv, 6667, null, nick, null, null);
+            irc.Connect(1, serv, 6667, null, nick, null, null);
+            irc.Connect(2, serv, 6667, null, "test2nodeirc", null, null);
             console.log('connected');
-            irc.Run();
+            irc.Run(1);
+            irc.Run(2);
             console.log('runned');
             connected = 3;
             response.writeHead(200, {"Content-Type": "text/html"});
