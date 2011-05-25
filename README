@@ -25,6 +25,7 @@ Simple binding of libircclient for node.js.
     27.04.11:   All about IRC events now works in another thread. ConnectCallback is working. Everything works in parallel with nodejs event loop. Web server and irc connection in example test.js
     28.04.11:   RecievedCallback events. Testing Web-page on 127.0.0.1:8100 - wait for connection to be viewed from console. Everything works fine, but we need a new arquitect to hold many irc connections. For showtime - small javascript which populates the page with new irc messages.
     03.05.11:   Testing web-page with chat window. Fixed some errors with memory management.
+    11.05.11:   Many fixes, function Run() now works fine and is non-blocking. Time to begin with lots of sessions.
 -----------------------------------------------
 3. FUNCTIONS DESCRIPTION
 This is the list of most common libircclient functions musthave in our implementation

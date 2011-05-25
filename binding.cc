@@ -33,7 +33,6 @@ struct ev_async eio_rc;
 //ConCB - a callback for "connected" event on IRC server
 static Handle<Value> CreateSession(const Arguments &args)
 {
-    printf("Create session\n");
     _callbacks.event_channel = rec_cb;
     _callbacks.event_connect = con_cb;
     _session = irc_create_session(&_callbacks);
@@ -58,14 +57,13 @@ static Handle<Value> CreateSession(const Arguments &args)
 //Connect(String server, Number port, String password, String nick, String username, String realname)
 static Handle<Value> Connect(const Arguments &args)
 {
-    printf("Connecting...\n");
     V8STR server(args[0]);
     int port = args[1]->Int32Value();
     V8STR password(args[2]);
     V8STR nick(args[3]);
     V8STR username(args[4]);
     V8STR realname(args[5]);
-    printf("connect: %d\n", irc_connect(_session, *server, port, *password, *nick, *username, *realname));
+    irc_connect(_session, *server, port, *password, *nick, *username, *realname);
 }
 
 //JS equivalent for irc_run command
@@ -79,9 +77,7 @@ static Handle<Value> Run(const Arguments &args)
     ev_async_init(&eio_rc, rec_cb_ev);
     ev_async_start(EV_DEFAULT_UC_ &eio_rc);
     pthread_create(&thread, NULL, run_thr, NULL);
-    ev_loop(EV_DEFAULT_ 0);
-    printf("works after loop!\n");
-    pthread_join(thread, NULL);
+    ev_loop(EV_DEFAULT_ EVLOOP_NONBLOCK);
 }
 
 //JS equivalent for irc_cmd_join command
@@ -89,10 +85,9 @@ static Handle<Value> Run(const Arguments &args)
 //Join(String channel, String key)
 static Handle<Value> Join(const Arguments &args)
 {
-    printf("Joininng...\n");
     V8STR chan(args[0]);
     V8STR key(args[1]);
-    printf("join: %d\n", irc_cmd_join(_session, *chan, *key));
+    irc_cmd_join(_session, *chan, *key);
 }
 
 //JS equivalent for irc_cmd_msg command
@@ -100,7 +95,6 @@ static Handle<Value> Join(const Arguments &args)
 //SendMsg(String dest, String text)
 static Handle<Value> SendMsg(const Arguments &args)
 {
-    printf("Sending message...\n");
     V8STR chan(args[0]);
     V8STR message(args[1]);
     irc_cmd_msg(_session, *chan, *message);
@@ -109,8 +103,7 @@ static Handle<Value> SendMsg(const Arguments &args)
 void *run_thr(void *vptr_args)
 {
     HandleScope scope;
-    printf("Running irc session\n");
-    printf("run: %d", irc_run(_session));
+    irc_run(_session);
 }
 
 void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
@@ -118,15 +111,12 @@ void rec_cb(irc_session_t *session, const char *event, const char *origin, const
     mess *newm = new mess;
     newm->origin = origin;
     newm->params = params;
-    printf("recieved callback\n");
-    printf("recieved callback\n");
     ev_set_userdata(newm);
     ev_async_send(EV_DEFAULT_UC_ &eio_rc);
 }
 
 void con_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
-    printf("connected\n");
     ev_async_send(EV_DEFAULT_UC_ &eio_nt);
 }
 
