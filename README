@@ -10,7 +10,7 @@ Simple binding of libircclient for node.js.
     1. Write implementations of libitcclient functions
         - understanding v8 engine
         - bind javascript code to libircclient functions call
-    2. Compile binary module irc.node
+    2. Compile binary module binding.node
     3. Write testing javascript
     4. Write simple web-face for irc-chatting
 -----------------------------------------------
@@ -18,6 +18,7 @@ Simple binding of libircclient for node.js.
     10.03.11:   First commit: README, package.json files, TODO list
 	17.03.11:	Added accessors for channel connection processing
 	12.04.11:	Testing environment for libircclient and libev - testirc
+	19.04.11:	Working tests: sending and recieving messages via console works well. Handling connected/recieved message events. New design of main module file (binding.cc)
 -----------------------------------------------
 3. FUNCTIONS DESCRIPTION
 This is the list of most common libircclient functions musthave in our implementation
@@ -30,4 +31,3 @@ This is the list of most common libircclient functions musthave in our implement
     + irc_disconnect(irc_session_t* session)
     + irc_run(irc_session_t* session)
         """Goes into forever-loop, processing IRC events and generating callbacks
-    
