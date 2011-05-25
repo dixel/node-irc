@@ -1,0 +1,28 @@
+node-irc
+Simple binding of libircclient for node.js.
+
+-----------------------------------------------
+1. Project TODO
+2. Commit history
+3. Functions description
+-----------------------------------------------
+1. PROJECT TODO
+    1. Write implementations of libitcclient functions
+    2. Compile binary module irc.node
+    3. Write testing javascript
+    4. Write simple web-face for irc-chatting
+-----------------------------------------------
+2. COMMIT HISTORY
+    10.03.11:   First commit: README, package.json files, TODO list
+-----------------------------------------------
+3. FUNCTIONS DESCRIPTION
+This is the list of most common libircclient functions musthave in our implementation
+    + irc_session_t* irc_create_session (irc_callback_t* callbacks)
+        """Creates and initiates a new IRC session.
+    + irc_destroy_session(irc_session_t* session)
+        """Destroys session
+    + irc_connect(session, server, port, password, nick, uname, realname)
+        """Initiates a connection to IRC server
+    + irc_disconnect(irc_session_t* session)
+    + irc_run(irc_session_t* session)
+        """Goes into forever-loop, processing IRC events and generating callbacks
