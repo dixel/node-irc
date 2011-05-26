@@ -166,13 +166,10 @@ extern "C" void
 init (Handle<Object> target)
 {
     HandleScope scope;
-    Local<FunctionTemplate> t = FunctionTemplate::New();
-    Local<Template> proto_t = t->PrototypeTemplate();
-    proto_t->Set("Connect", FunctionTemplate::New(Connect));
-    proto_t->Set("Run", FunctionTemplate::New(Run));
-    proto_t->Set("CreateSession", FunctionTemplate::New(CreateSession));
-    proto_t->Set("Join", FunctionTemplate::New(Join));
-    proto_t->Set("SendMsg", FunctionTemplate::New(SendMsg));
-    proto_t->Set("Disconnect", FunctionTemplate::New(Disconnect));
-    target->Set(String::NewSymbol("func"), t->GetFunction());
+    target->Set(String::NewSymbol("CreateSession"), FunctionTemplate::New(CreateSession)->GetFunction());
+    target->Set(String::NewSymbol("Connect"), FunctionTemplate::New(Connect)->GetFunction());
+    target->Set(String::NewSymbol("Run"), FunctionTemplate::New(Run)->GetFunction());
+    target->Set(String::NewSymbol("Join"), FunctionTemplate::New(Join)->GetFunction());
+    target->Set(String::NewSymbol("SendMsg"), FunctionTemplate::New(SendMsg)->GetFunction());
+    target->Set(String::NewSymbol("Disconnect"), FunctionTemplate::New(Disconnect)->GetFunction());
 }

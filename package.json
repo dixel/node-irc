@@ -1,5 +1,5 @@
 {
-  "name": "irc",
+  "name": "node-irc",
   "description": "node.js binding for libircclient",
   "version": "0.0.1",
   "homepage": "https://github.com/BACuTPOH/node-irc",
@@ -8,7 +8,7 @@
     "url": "git://github.com/BACuTPOH/node-irc.git"
   },
   "author": "BACuTPOH <BACuTPOH@gmail.com> (dixel.blogspot.com)",
-  "main": "irc",
+  "main": "./build/default/binding",
   "directories": {
     "lib": "."
   },

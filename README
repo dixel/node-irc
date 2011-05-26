@@ -32,6 +32,7 @@ Simple binding of libircclient for node.js.
     25.05.11:   Fixed bugs on 64-bit systems, state UML diagram.
     25.05.11:   Sequence UML diagram; header file binding.h with all necesarry information about JS functions.
     26.06.11:   Session now is an object returned by CreateSession(..); Disconnect function, callback fix.
+    26.06.11:   Everything without prototypes. Just require("way_to_module"). You can choose nick on your testing page.
 -----------------------------------------------
 3. FUNCTIONS DESCRIPTION
 This is the list of most common libircclient functions musthave in our implementation
