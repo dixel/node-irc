@@ -23,6 +23,11 @@ static Handle<Value> CreateSession(const Arguments &args);
 //Connect(String server, Number port, String password, String nick, String username, String realname)
 static Handle<Value> Connect(const Arguments &args);
 
+//JS equivalent for irc_disconnect command
+//parameters:
+//Disconnect(Session)
+static Handle<Value> Disconnect(const Arguments &args);
+
 //JS equivalent for irc_run command
 //parameters:
 //Run(Number session)
@@ -47,15 +52,17 @@ typedef struct message
     const char **params;
 } mess;
 
+int strip_sess(Handle<Value> sess);
 void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
 void con_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
 void *run_thr(void *vptr_args);
 void con_cb_ev(EV_P_ ev_async *watcher, int revents);
 void rec_cb_ev(EV_P_ ev_async *watcher, int revents);
 
-Persistent<Function> RecCB; 
-Persistent<Function> ConCB; 
+Persistent<Function> RecCB[MAXCLI]; 
+Persistent<Function> ConCB[MAXCLI]; 
 irc_callbacks_t _callbacks;
 irc_session_t *_session[MAXCLI];
+int sess_cnt = 0;
 struct ev_async eio_nt;
 struct ev_async eio_rc;

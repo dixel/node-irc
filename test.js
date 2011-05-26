@@ -6,11 +6,13 @@ var irc = require('./build/default/binding').func.prototype;
 var hr_ref = '<html><meta http-equiv="refresh" content="10;url = ./"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><head><body><h1>simple IRC chat on irc.freenode.net #test_node</h1>'
 var hr_noref = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><head><body><h1>simple IRC chat on irc.freenode.net #test_node</h1>'
 var ind = '<form method="get"> <input type="submit" name="submit" value="Connect"> </form> </body> </head> </html>'
-var con = '</td></tr></table> <form method="get"> <input type="text" name="msg" size=20> Message <br> <input type="submit" name="submit" value="Send"> </form> </body> </head> </html>'
+var con = '</td></tr></table> <form method="get"> <input type="text" name="msg" size=20> Message <br> <input type="submit" name="submit" value="Send"> <input type = "submit" name="submit" value = "Disconnect"> </form> </body> </head> </html>'
 var tab = '<table noshade border=1 cellspacing=0 cellpadding=0 width=100%><tr><td><p align=center><b>irc.freenode.net #test_node</b></p>'
-var nick = 'default_node_irc';
+var nick = 'crazy_nodder_pic';
 var serv = 'irc.freenode.net';
 var chan = '#test_node';
+var sess_1 = new Object();
+var sess_2 = new Object();
 
 var msgq = "";
 var connected = 4;
@@ -20,23 +22,26 @@ console.log('||||||||starting nodejs http server|||||||||||||');
 
 function ConnectCallback(session)
 {
-    console.log('session #' + session + 'Connected to server, attempting to join...');
+    console.log('session #' + session.sess_id + 'Connected to server, attempting to join...');
     irc.SendMsg(session, "dixel", "<here I am>");
     irc.Join(session, chan, "");
-    irc.SendMsg(2, chan, "Hello, I am just a bot here!");
+    irc.SendMsg(sess_2, chan, "Hello, I am just a bot here!");
     connected = 2;
 }
 
 function RecieveCallback(session, origin, message)
 {
-    console.log('>%d %s: %s', session, origin, message);
-    if(session == 1)
+    console.log('>%d %s: %s', session.sess_id, origin, message);
+    if(session.sess_id == 1)
     {
         msgq = msgq + "<b>"+ origin.match(nickrx)+"</b>: " + message + "<br>";
     }
-    if(session == 2)
+    if(session.sess_id == 2)
     {
-        irc.SendMsg(session, chan, origin.match(nickrx)+", you're so cute!");
+        if (message.match(/.+test.+/))
+        {
+            irc.SendMsg(session, chan, origin.match(nickrx)+", you're so cute!");
+        }
     }
 }
 
@@ -48,7 +53,7 @@ http.createServer(function(request, response){
         if(query.query.submit == 'Send')
         {
             console.log('attempting to send a message');
-            irc.SendMsg(1, chan, query.query.msg);
+            irc.SendMsg(sess_1, chan, query.query.msg);
             response.writeHead(200, {"Content-Type": "text/html"});
             response.write(hr_ref, encoding = 'utf-8');
             response.write(tab, encoding = 'utf-8');
@@ -57,24 +62,32 @@ http.createServer(function(request, response){
             response.end(con);
         }
 
+        if(query.query.submit == 'Disconnect')
+        {
+            console.log('disconnecting');
+            irc.Disconnect(sess_1);
+            irc.Disconnect(sess_2);
+            response.writeHead(200, {"Content-Type": "text/html"});
+            response.write(hr_noref, encoding = 'utf-8');
+            response.end(ind);
+            connected = 4;
+        }
+
         else if (query.query.submit == 'Connect' && connected == 4)
         {
             var x = new Object();
             var y = new Object();
-            x.sessionId = 1;
             x.recieveCallback = RecieveCallback;
             x.connectCallback = ConnectCallback;
-            y.sessionId = 2;
             y.recieveCallback = RecieveCallback;
             y.connectCallback = ConnectCallback;
-            irc.CreateSession(x);
-            irc.CreateSession(y);
-            //irc.CreateSession(ConnectCallback, RecieveCallback);
-            irc.Connect(1, serv, 6667, null, nick, null, null);
-            irc.Connect(2, serv, 6667, null, "test2nodeirc", null, null);
+            sess_1 = irc.CreateSession(x);
+            sess_2 = irc.CreateSession(y);
+            irc.Connect(sess_1, serv, 6667, null, nick, null, null);
+            irc.Connect(sess_2, serv, 6667, null, "testearnodeirc", null, null);
             console.log('connected');
-            irc.Run(1);
-            irc.Run(2);
+            irc.Run(sess_1);
+            irc.Run(sess_2);
             console.log('runned');
             connected = 3;
             response.writeHead(200, {"Content-Type": "text/html"});

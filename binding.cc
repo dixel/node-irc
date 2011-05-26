@@ -3,45 +3,56 @@
 static Handle<Value> CreateSession(const Arguments &args)
 {
     printf("DEBUG:: createsession\n");
-    unsigned int sess_id = 0;
+    
     _callbacks.event_channel = rec_cb;
     _callbacks.event_connect = con_cb;
-    bool wecandoit = false;
+
+    sess_cnt++;
+    Local<Object> Session = Object::New();
+    Session->Set(String::New("sess_id"), Integer::New(sess_cnt));
+
     if (args[0]->IsObject())
     {
         Local<Object> sess = Object::Cast(*args[0]);
-        if(sess->Has(String::New("sessionId")))
-        {
-            sess_id = sess->Get(String::New("sessionId"))->Int32Value();
-            wecandoit = true;
-        }
         if(sess->Has(String::New("connectCallback")))
         {
             Local<Function> concb = Function::Cast(*(sess->Get(String::New("connectCallback"))));
-            ConCB = Persistent<Function>::New(concb);
+            ConCB[sess_cnt] = Persistent<Function>::New(concb);
         }
         if(sess->Has(String::New("recieveCallback")))
         {
             Local<Function> reccb = Function::Cast(*(sess->Get(String::New("recieveCallback"))));
-            RecCB = Persistent<Function>::New(reccb);
+            RecCB[sess_cnt] = Persistent<Function>::New(reccb);
         }
     }
-    if(wecandoit)
+
+    _session[sess_cnt] = irc_create_session(&_callbacks);
+    irc_set_ctx(_session[sess_cnt], new int(sess_cnt));
+    return(Session);
+}
+
+int strip_sess(Handle<Value> sess)
+{
+    if(sess->IsObject())
     {
-        _session[sess_id] = irc_create_session(&_callbacks);
-        irc_set_ctx(_session[sess_id], new int(sess_id));
-        return(Integer::New(0));
+        Local<Object> stress = Object::Cast(*sess);
+        if (stress->Has(String::New("sess_id")))
+        {
+            return stress->Get(String::New("sess_id"))->Int32Value();
+        }
+        else
+            return 0;
     }
     else
-    {
-        return(Integer::New(1));
-    }
+        return 0;
 }
+
 
 static Handle<Value> Connect(const Arguments &args)
 {
     printf("DEBUG:: connect\n");
-    unsigned int sess_id = args[0]->Int32Value();
+    unsigned int sess_id = strip_sess(args[0]);
+
     V8STR server(args[1]);
     int port = args[2]->Int32Value();
     V8STR password(args[3]);
@@ -51,10 +62,19 @@ static Handle<Value> Connect(const Arguments &args)
     irc_connect(_session[sess_id], *server, port, *password, *nick, *username, *realname);
 }
 
+static Handle<Value> Disconnect(const Arguments &args)
+{
+    printf("DEBUG:: disconnect\n");
+    unsigned int sess_id = strip_sess(args[0]);
+    irc_disconnect(_session[sess_id]);
+    RecCB[sess_id].Dispose();
+    ConCB[sess_id].Dispose();
+}
+
 static Handle<Value> Run(const Arguments &args)
 {
     printf("DEBUG:: run\n");
-    unsigned int sess_id = args[0]->Int32Value();
+    unsigned int sess_id = strip_sess(args[0]);
     pthread_t thread;
     ev_async_init(&eio_nt, con_cb_ev);
     ev_async_start(EV_DEFAULT_UC_ &eio_nt);
@@ -67,7 +87,7 @@ static Handle<Value> Run(const Arguments &args)
 static Handle<Value> Join(const Arguments &args)
 {
     printf("DEBUG:: join\n");
-    unsigned int sess_id = args[0]->Int32Value();
+    unsigned int sess_id = strip_sess(args[0]);
     V8STR chan(args[1]);
     V8STR key(args[2]);
     irc_cmd_join(_session[sess_id], *chan, *key);
@@ -76,10 +96,11 @@ static Handle<Value> Join(const Arguments &args)
 static Handle<Value> SendMsg(const Arguments &args)
 {
     printf("DEBUG:: sendmsg\n");
-    unsigned int sess_id = args[0]->Int32Value();
+    unsigned int sess_id = strip_sess(args[0]);
     V8STR chan(args[1]);
     V8STR message(args[2]);
     irc_cmd_msg(_session[sess_id], *chan, *message);
+    printf("DEBUG:: sendmsg - sent\n");
 }
 
 void *run_thr(void *vptr_args)
@@ -112,26 +133,31 @@ void rec_cb_ev(EV_P_ ev_async *watcher, int revents)
     printf("DEBUG:: rec_cb_ev\n");
     mess *parser;
     parser = (mess *)ev_userdata();
+    Handle<Object> sess = Object::New();
+    sess->Set(String::New("sess_id"), Integer::New(parser->session));
     Handle<Value> args[2];
-    args[0] = Integer::New(parser->session);
+    args[0] = sess;
     args[1] = String::New(parser->origin);
     args[2] = String::New(parser->params[1]);
-    if (RecCB->IsFunction())
+    if (RecCB[parser->session]->IsFunction())
     {
         Handle<Object> tmp = Object::New();
-        RecCB->Call(tmp, 3, args);
+        RecCB[parser->session]->Call(tmp, 3, args);
     }
 }
 
 void con_cb_ev(EV_P_ ev_async *watcher, int revents)
 {
     Handle<Value> args[0];
-    args[0] = Integer::New(*reinterpret_cast<int*>(ev_userdata()));
+    Handle<Object> sess = Object::New();
+    int sess_id = *reinterpret_cast<int*>(ev_userdata());
+    sess->Set(String::New("sess_id"), Integer::New(sess_id));
+    args[0] = sess;
     printf("DEBUG:: con_cb_ev\n");
-    if (ConCB->IsFunction())
+    if (ConCB[sess_id]->IsFunction())
     {
         Handle<Object> tmp = Object::New();
-        ConCB->Call(tmp, 1, args);
+        ConCB[sess_id]->Call(tmp, 1, args);
     }
 }
 
@@ -147,5 +173,6 @@ init (Handle<Object> target)
     proto_t->Set("CreateSession", FunctionTemplate::New(CreateSession));
     proto_t->Set("Join", FunctionTemplate::New(Join));
     proto_t->Set("SendMsg", FunctionTemplate::New(SendMsg));
+    proto_t->Set("Disconnect", FunctionTemplate::New(Disconnect));
     target->Set(String::NewSymbol("func"), t->GetFunction());
 }
