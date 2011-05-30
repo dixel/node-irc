@@ -29,13 +29,20 @@ function ConnectCallback(session)
     connected = 2;
 }
 
+function RecieveCallback2(session, origin, message)
+{
+        if (message.match(/.+[Tt]est.+/))
+        {
+            irc.SendMsg(session, chan, origin.match(nickrx)+", are you testing me?");
+        }
+        if (message.match(/(.+cute.+)|(.+funny.+)|(.+nice.+)/))
+            irc.SendMsg(session, chan, origin.match(nickrx)+", you are so cute! ^_^");
+}
+
 function RecieveCallback(session, origin, message)
 {
     console.log('>%d %s: %s', session.sess_id, origin, message);
-    if(session.sess_id == sess_1.sess_id)
-    {
-        msgq = msgq + "<b>"+ origin.match(nickrx)+"</b>: " + message + "<br>";
-    }
+    msgq = msgq + "<b>"+ origin.match(nickrx)+"</b>: " + message + "<br>";
     if(session.sess_id == sess_2.sess_id)
     {
         if (message.match(/.+test.+/))
@@ -108,7 +115,7 @@ http.createServer(function(request, response){
             x.joinCallback = JoinCallback;
             x.partCallback = PartCallback;
             x.nickCallback = NickCallback;
-            y.recieveCallback = RecieveCallback;
+            y.recieveCallback = RecieveCallback2;
             y.connectCallback = ConnectCallback;
             sess_1 = irc.CreateSession(x);
             sess_2 = irc.CreateSession(y);
