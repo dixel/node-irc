@@ -8,6 +8,7 @@ static Handle<Value> CreateSession(const Arguments &args)
     _callbacks.event_connect = con_cb;
     _callbacks.event_join = cmn_cb;
     _callbacks.event_part = cmn_cb;
+    _callbacks.event_nick = cmn_cb;
 
     sess_cnt++;
     Local<Object> Session = Object::New();
@@ -191,6 +192,10 @@ void cmn_cb_ev(EV_P_ ev_async *watcher, int revents)
     if (!strcmp(msg->event, "PART"))
     {
         call_func(msg, "partCallback");
+    }
+    if(!strcmp(msg->event, "NICK"))
+    {
+        call_func(msg, "nickCallback");
     }
 }
 

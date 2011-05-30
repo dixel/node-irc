@@ -63,6 +63,12 @@ function PartCallback(session, even, origin, params)
     }
 }
 
+function NickCallback(session, even, origin, params)
+{
+    console.log('NICK');
+    msgq = msgq + "<i>" + origin.match(nickrx) + " changed his nickname to " + params[0] + "</i><br>";
+}
+
 http.createServer(function(request, response){
     if(request.method == 'GET')
     {
@@ -101,6 +107,7 @@ http.createServer(function(request, response){
             x.connectCallback = ConnectCallback;
             x.joinCallback = JoinCallback;
             x.partCallback = PartCallback;
+            x.nickCallback = NickCallback;
             y.recieveCallback = RecieveCallback;
             y.connectCallback = ConnectCallback;
             sess_1 = irc.CreateSession(x);
