@@ -4,8 +4,8 @@ static Handle<Value> CreateSession(const Arguments &args)
 {
     printf("DEBUG:: createsession\n");
     
-    _callbacks.event_channel = rec_cb;
-    _callbacks.event_connect = con_cb;
+    _callbacks.event_channel = cmn_cb;
+    _callbacks.event_connect = cmn_cb;
     _callbacks.event_join = cmn_cb;
     _callbacks.event_part = cmn_cb;
     _callbacks.event_nick = cmn_cb;
@@ -16,17 +16,6 @@ static Handle<Value> CreateSession(const Arguments &args)
 
     if (args[0]->IsObject())
     {
-        Local<Object> sess = Object::Cast(*args[0]);
-        if(sess->Has(String::New("connectCallback")))
-        {
-            Local<Function> concb = Function::Cast(*(sess->Get(String::New("connectCallback"))));
-            ConCB[sess_cnt] = Persistent<Function>::New(concb);
-        }
-        if(sess->Has(String::New("recieveCallback")))
-        {
-            Local<Function> reccb = Function::Cast(*(sess->Get(String::New("recieveCallback"))));
-            RecCB[sess_cnt] = Persistent<Function>::New(reccb);
-        }
         Local<Object> userobj = Object::Cast(*args[0]);
         UserCB[sess_cnt] = Persistent<Object>::New(userobj);
     }
@@ -72,8 +61,7 @@ static Handle<Value> Disconnect(const Arguments &args)
     printf("DEBUG:: disconnect\n");
     unsigned int sess_id = strip_sess(args[0]);
     irc_disconnect(_session[sess_id]);
-    RecCB[sess_id].Dispose();
-    ConCB[sess_id].Dispose();
+    UserCB[sess_id].Dispose();
 }
 
 static Handle<Value> Run(const Arguments &args)
@@ -81,10 +69,6 @@ static Handle<Value> Run(const Arguments &args)
     printf("DEBUG:: run\n");
     unsigned int sess_id = strip_sess(args[0]);
     pthread_t thread;
-    ev_async_init(&eio_nt, con_cb_ev);
-    ev_async_start(EV_DEFAULT_UC_ &eio_nt);
-    ev_async_init(&eio_rc, rec_cb_ev);
-    ev_async_start(EV_DEFAULT_UC_ &eio_rc);
     ev_async_init(&eio_cm, cmn_cb_ev);
     ev_async_start(EV_DEFAULT_UC_ &eio_cm);
     pthread_create(&thread, NULL, run_thr, new int (sess_id));
@@ -117,24 +101,6 @@ void *run_thr(void *vptr_args)
     delete reinterpret_cast<int *>(vptr_args);
 }
 
-void rec_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
-{
-    printf("DEBUG:: rec_cb\n");
-    mess *newm = new mess;
-    newm->session = *reinterpret_cast<int *>(irc_get_ctx(session));
-    newm->origin = origin;
-    newm->params = params;
-    ev_set_userdata(newm);
-    ev_async_send(EV_DEFAULT_UC_ &eio_rc);
-}
-
-void con_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
-{
-    printf("DEBUG:: con_cb\n");
-    ev_set_userdata(irc_get_ctx(session));
-    ev_async_send(EV_DEFAULT_UC_ &eio_nt);
-}
-
 void cmn_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
     printf("DEBUG:: cmn_cb\n");
@@ -147,39 +113,6 @@ void cmn_cb(irc_session_t *session, const char *event, const char *origin, const
     ev_async_send(EV_DEFAULT_UC_ &eio_cm);
 }
     
-void rec_cb_ev(EV_P_ ev_async *watcher, int revents)
-{
-    printf("DEBUG:: rec_cb_ev\n");
-    mess *parser;
-    parser = (mess *)ev_userdata();
-    Handle<Object> sess = Object::New();
-    sess->Set(String::New("sess_id"), Integer::New(parser->session));
-    Handle<Value> args[2];
-    args[0] = sess;
-    args[1] = String::New(parser->origin);
-    args[2] = String::New(parser->params[1]);
-    if (RecCB[parser->session]->IsFunction())
-    {
-        Handle<Object> tmp = Object::New();
-        RecCB[parser->session]->Call(tmp, 3, args);
-    }
-}
-
-void con_cb_ev(EV_P_ ev_async *watcher, int revents)
-{
-    Handle<Value> args[0];
-    Handle<Object> sess = Object::New();
-    int sess_id = *reinterpret_cast<int*>(ev_userdata());
-    sess->Set(String::New("sess_id"), Integer::New(sess_id));
-    args[0] = sess;
-    printf("DEBUG:: con_cb_ev\n");
-    if (ConCB[sess_id]->IsFunction())
-    {
-        Handle<Object> tmp = Object::New();
-        ConCB[sess_id]->Call(tmp, 1, args);
-    }
-}
-
 void cmn_cb_ev(EV_P_ ev_async *watcher, int revents)
 {
     printf("DEBUG:: cmn_cb_ev\n");
@@ -196,6 +129,14 @@ void cmn_cb_ev(EV_P_ ev_async *watcher, int revents)
     if(!strcmp(msg->event, "NICK"))
     {
         call_func(msg, "nickCallback");
+    }
+    if(!strcmp(msg->event, "CONNECT"))
+    {
+        call_func(msg, "connectCallback");
+    }
+    if(!strcmp(msg->event, "PRIVMSG"))
+    {
+        call_func(msg, "recieveCallback");
     }
 }
 
