@@ -36,6 +36,7 @@ Simple binding of libircclient for node.js.
     30.05.11:   Common callback function written, base for implementing every one necessarry callback (joinCallback, partCallback for ex.); test.js modified for ex.)
     30.05.11:   Callbacks for: nick, part, join events. Testing script test.js.
     30.05.11:   Modified bot.
+    30.05.11:   All callbacks now are dispatched by cmn_cb.
 -----------------------------------------------
 3. FUNCTIONS DESCRIPTION
 This is the list of most common libircclient functions musthave in our implementation
