@@ -45,6 +45,24 @@ function RecieveCallback(session, origin, message)
     }
 }
 
+function JoinCallback(session, even, origin, params)
+{
+    console.log('JOINED');
+    if(origin.match(nickrx) != nick)
+    {
+        msgq = msgq + "<i>" + origin.match(nickrx) + " joined channel " + params[0] + "</i><br>";
+    }
+}
+
+function PartCallback(session, even, origin, params)
+{
+    console.log('PARTED');
+    if(origin.match(nickrx) != nick)
+    {
+        msgq = msgq + "<i>" + origin.match(nickrx) + " has parted channel " + params[0] + "</i><br>";
+    }
+}
+
 http.createServer(function(request, response){
     if(request.method == 'GET')
     {
@@ -81,12 +99,14 @@ http.createServer(function(request, response){
             nick = query.query.nick;
             x.recieveCallback = RecieveCallback;
             x.connectCallback = ConnectCallback;
+            x.joinCallback = JoinCallback;
+            x.partCallback = PartCallback;
             y.recieveCallback = RecieveCallback;
             y.connectCallback = ConnectCallback;
             sess_1 = irc.CreateSession(x);
             sess_2 = irc.CreateSession(y);
             irc.Connect(sess_1, serv, 6667, null, nick, null, null);
-            irc.Connect(sess_2, serv, 6667, null, "terra_node", null, null);
+            irc.Connect(sess_2, serv, 6667, null, "nodejs_bot_here", null, null);
             console.log('connected');
             irc.Run(sess_1);
             irc.Run(sess_2);

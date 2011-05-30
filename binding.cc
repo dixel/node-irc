@@ -6,6 +6,8 @@ static Handle<Value> CreateSession(const Arguments &args)
     
     _callbacks.event_channel = rec_cb;
     _callbacks.event_connect = con_cb;
+    _callbacks.event_join = cmn_cb;
+    _callbacks.event_part = cmn_cb;
 
     sess_cnt++;
     Local<Object> Session = Object::New();
@@ -24,6 +26,8 @@ static Handle<Value> CreateSession(const Arguments &args)
             Local<Function> reccb = Function::Cast(*(sess->Get(String::New("recieveCallback"))));
             RecCB[sess_cnt] = Persistent<Function>::New(reccb);
         }
+        Local<Object> userobj = Object::Cast(*args[0]);
+        UserCB[sess_cnt] = Persistent<Object>::New(userobj);
     }
 
     _session[sess_cnt] = irc_create_session(&_callbacks);
@@ -80,6 +84,8 @@ static Handle<Value> Run(const Arguments &args)
     ev_async_start(EV_DEFAULT_UC_ &eio_nt);
     ev_async_init(&eio_rc, rec_cb_ev);
     ev_async_start(EV_DEFAULT_UC_ &eio_rc);
+    ev_async_init(&eio_cm, cmn_cb_ev);
+    ev_async_start(EV_DEFAULT_UC_ &eio_cm);
     pthread_create(&thread, NULL, run_thr, new int (sess_id));
     ev_loop(EV_DEFAULT_ EVLOOP_NONBLOCK);
 }
@@ -128,6 +134,18 @@ void con_cb(irc_session_t *session, const char *event, const char *origin, const
     ev_async_send(EV_DEFAULT_UC_ &eio_nt);
 }
 
+void cmn_cb(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
+{
+    printf("DEBUG:: cmn_cb\n");
+    cbvar *msg = new cbvar;
+    msg->session = *reinterpret_cast<int *>(irc_get_ctx(session));
+    strncpy(msg->event, event, EVENTLEN);
+    strncpy(msg->origin, origin, ORIGINLEN);
+    msg->params = params;
+    ev_set_userdata(msg);
+    ev_async_send(EV_DEFAULT_UC_ &eio_cm);
+}
+    
 void rec_cb_ev(EV_P_ ev_async *watcher, int revents)
 {
     printf("DEBUG:: rec_cb_ev\n");
@@ -161,6 +179,50 @@ void con_cb_ev(EV_P_ ev_async *watcher, int revents)
     }
 }
 
+void cmn_cb_ev(EV_P_ ev_async *watcher, int revents)
+{
+    printf("DEBUG:: cmn_cb_ev\n");
+    cbvar *msg = new cbvar(*(cbvar *)ev_userdata());
+    printf("%s\n", msg->event);
+    if (!strcmp(msg->event, "JOIN"))
+    {
+        call_func(msg, "joinCallback");
+    }
+    if (!strcmp(msg->event, "PART"))
+    {
+        call_func(msg, "partCallback");
+    }
+}
+
+int call_func(cbvar *msg, const char *name)
+{
+    Handle<Value> func;
+    if (UserCB[msg->session]->Has(String::New(name)))
+    {
+        func = UserCB[msg->session]->Get(String::New(name));
+        if (func->IsFunction())
+        {
+            Handle<Object> tmp = Object::New();
+            Handle<Value> args[4];
+            int i = 0;
+            printf("SESSION: %d  EVENT: %s  ORIGIN: %s  PARAMS[0]: %s\n", msg->session, msg->event, msg->origin, msg->params[0]);
+            Handle<Object> sess = Object::New();
+            sess->Set(String::New("sess_id"), Integer::New(msg->session));
+            Handle<Object> params = Object::New();
+            while (msg->params[i] != NULL)
+            {
+                params->Set(i, String::New(msg->params[i]));
+                i++;
+            }
+            args[0] = sess;
+            args[1] = String::New(msg->event);
+            args[2] = String::New(msg->origin);
+            args[3] = params;
+            Local<Function> fn = Function::Cast(*(func));
+            fn->Call(tmp, 4, args);
+        }
+    }
+}
 
 extern "C" void
 init (Handle<Object> target)
