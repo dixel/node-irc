@@ -2,7 +2,12 @@
 
 <p><em>Simple binding of libircclient for node.js.</em></p>
 
-<h3>1. MODULE DESCRIPTION</h3>
+<h3>1. USAGE</h3>
+
+<pre><code>require("./build/default/binding")
+</code></pre>
+
+<h3>2. MODULE DESCRIPTION</h3>
 
 <h4>Functions:</h4>
 
@@ -11,7 +16,7 @@
 Creates an unique javascript object <code>Session</code> which will identify your IRC session</li>
 <li><code>Number Connect(Session session, Number port, String password, String nick, String username, String realname)</code> <br />
 Creates connection to the server. Returns 0 if success.</li>
-<li><code>Integer Run(Session session)</code> <br />
+<li><code>Run(Session session)</code> <br />
 Starts an IRC-session - processing callbacks, sending messages etc. Implemented non-blocking.</li>
 <li><code>Integer Disconnect(Session session)</code> <br />
 Disconnects from IRC-server, free memory ocupied by user-callbacks.</li>
@@ -19,6 +24,16 @@ Disconnects from IRC-server, free memory ocupied by user-callbacks.</li>
 Join IRC-channel <code>channel</code> with passphrase <code>key</code></li>
 <li><code>Integer SendMsg(Session session, String destination, String text)</code> <br />
 Send a message <code>text</code> to channel/nick <code>destination</code></li>
+<li><code>Integer Part(Session session, String channel)</code> <br />
+Part channel <code>channel</code> and stop talking here.</li>
+<li><code>Integer Invite(Session session, String nick, String channel)</code> <br />
+Invite user <code>nick</code> to channel <code>channel</code>.</li>
+<li><code>Integer Mode(Session session, String channel, String mode)</code> <br />
+Set mode (ex. +b -t etc) <code>mode</code> for channel <code>channel</code>.</li>
+<li><code>Integer Kick(Session session, String nick, String channel, String reason)</code> <br />
+Kick user <code>nick</code> from <code>channel</code> for <code>reason</code>.</li>
+<li><code>Integer Topic(Session sessiom, String channel, String topic)</code> <br />
+Set <code>topic</code> for <code>channel</code>.</li>
 </ul>
 
 <h4>Callbacks object fields:</h4>
@@ -35,7 +50,7 @@ Send a message <code>text</code> to channel/nick <code>destination</code></li>
 
 <hr />
 
-<h3>2. COMMIT HISTORY</h3>
+<h3>3. COMMIT HISTORY</h3>
 
 <pre><code>10.03.11:   First commit: README, package.json files, TODO list
 17.03.11:   Added accessors for channel connection processing
@@ -59,6 +74,8 @@ Send a message <code>text</code> to channel/nick <code>destination</code></li>
 30.05.11:   Callbacks for: nick, part, join events. Testing script test.js.
 30.05.11:   Modified bot.
 30.05.11:   All callbacks now are dispatched by cmn_cb.
+31.05.11:   Modified documentation - view README.md/README.html.
+31.05.11:   Functions: Part, Invite, Kick, Mode, Topic. Test how bot leaves channel - test.js.
 </code></pre>
 
 <hr />

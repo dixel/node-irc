@@ -53,15 +53,15 @@ static Handle<Value> Connect(const Arguments &args)
     V8STR nick(args[4]);
     V8STR username(args[5]);
     V8STR realname(args[6]);
-    irc_connect(_session[sess_id], *server, port, *password, *nick, *username, *realname);
+    return Integer::New(irc_connect(_session[sess_id], *server, port, *password, *nick, *username, *realname));
 }
 
 static Handle<Value> Disconnect(const Arguments &args)
 {
     printf("DEBUG:: disconnect\n");
     unsigned int sess_id = strip_sess(args[0]);
-    irc_disconnect(_session[sess_id]);
     UserCB[sess_id].Dispose();
+    irc_disconnect(_session[sess_id]);
 }
 
 static Handle<Value> Run(const Arguments &args)
@@ -81,7 +81,52 @@ static Handle<Value> Join(const Arguments &args)
     unsigned int sess_id = strip_sess(args[0]);
     V8STR chan(args[1]);
     V8STR key(args[2]);
-    irc_cmd_join(_session[sess_id], *chan, *key);
+    return Integer::New(irc_cmd_join(_session[sess_id], *chan, *key));
+}
+
+static Handle<Value> Part(const Arguments &args)
+{
+    printf("DEBUG:: part\n");
+    unsigned int sess_id = strip_sess(args[0]);
+    V8STR chan(args[1]);
+    return Integer::New(irc_cmd_part(_session[sess_id], *chan));
+}
+
+static Handle<Value> Topic(const Arguments &args)
+{
+    printf("DEBUG:: topic\n");
+    unsigned int sess_id = strip_sess(args[0]);
+    const char *chan = *(V8STR(args[1]));
+    const char *topic = *(V8STR(args[2]));
+    return Integer::New(irc_cmd_topic(_session[sess_id], chan, topic));
+}
+
+static Handle<Value> Kick(const Arguments &args)
+{
+    printf("DEBUG:: kick\n");
+    unsigned int sess_id = strip_sess(args[0]);
+    const char *nick = *(V8STR(args[1]));
+    const char *chan = *(V8STR(args[2]));
+    const char *reason = *(V8STR(args[3]));
+    return Integer::New(irc_cmd_kick(_session[sess_id], nick, chan, reason));
+}
+
+static Handle<Value> Mode(const Arguments &args)
+{
+    printf("DEBUG:: mode\n");
+    unsigned int sess_id = strip_sess(args[0]);
+    const char *chan = *(V8STR(args[1]));
+    const char *mode = *(V8STR(args[2]));
+    return Integer::New(irc_cmd_channel_mode(_session[sess_id], chan, mode));
+}
+
+static Handle<Value> Invite(const Arguments &args)
+{
+    printf("DEBUG:: invite\n");
+    unsigned int sess_id = strip_sess(args[0]);
+    const char *nick = *(V8STR(args[1]));
+    const char *chan = *(V8STR(args[2]));
+    return Integer::New(irc_cmd_invite(_session[sess_id], nick, chan));
 }
 
 static Handle<Value> SendMsg(const Arguments &args)
@@ -90,8 +135,7 @@ static Handle<Value> SendMsg(const Arguments &args)
     unsigned int sess_id = strip_sess(args[0]);
     V8STR chan(args[1]);
     V8STR message(args[2]);
-    irc_cmd_msg(_session[sess_id], *chan, *message);
-    printf("DEBUG:: sendmsg - sent\n");
+    return Integer::New(irc_cmd_msg(_session[sess_id], *chan, *message));
 }
 
 void *run_thr(void *vptr_args)
@@ -180,4 +224,9 @@ init (Handle<Object> target)
     target->Set(String::NewSymbol("Join"), FunctionTemplate::New(Join)->GetFunction());
     target->Set(String::NewSymbol("SendMsg"), FunctionTemplate::New(SendMsg)->GetFunction());
     target->Set(String::NewSymbol("Disconnect"), FunctionTemplate::New(Disconnect)->GetFunction());
+    target->Set(String::NewSymbol("Part"), FunctionTemplate::New(Part)->GetFunction());
+    target->Set(String::NewSymbol("Topic"), FunctionTemplate::New(Topic)->GetFunction());
+    target->Set(String::NewSymbol("Mode"), FunctionTemplate::New(Mode)->GetFunction());
+    target->Set(String::NewSymbol("Invite"), FunctionTemplate::New(Invite)->GetFunction());
+    target->Set(String::NewSymbol("Kick"), FunctionTemplate::New(Kick)->GetFunction());
 }

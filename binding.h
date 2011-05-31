@@ -44,6 +44,13 @@ static Handle<Value> Join(const Arguments &args);
 //SendMsg(Number session, String dest, String text)
 static Handle<Value> SendMsg(const Arguments &args);
 
+
+static Handle<Value> Part(const Arguments &args);
+static Handle<Value> Topic(const Arguments &args);
+static Handle<Value> Kick(const Arguments &args);
+static Handle<Value> Mode(const Arguments &args);
+static Handle<Value> Invite(const Arguments &args);
+
 //Internal structures and functions:
 
 typedef struct message

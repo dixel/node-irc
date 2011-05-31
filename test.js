@@ -9,7 +9,7 @@ var ind = '<form method="get"><input type="text" name="nick" size=20>Nick<br> <i
 var con = '</td></tr></table> <form method="get"> <input type="text" name="msg" size=20> Message <br> <input type="submit" name="submit" value="Send"> <input type = "submit" name="submit" value = "Disconnect"><a name="bot"></a> </form> </body> </head> </html>'
 var tab = '<table noshade border=1 cellspacing=0 cellpadding=0 width=100%><tr><td><p align=center><b>irc.freenode.net #test_node</b></p>'
 var nick = 'abcder0017';
-var nick2 = 'another_nodder';
+var nick2 = 'botting_name_23572';
 var serv = 'irc.freenode.net';
 var chan = '#test_node';
 sess_1 = new Object();
@@ -18,6 +18,7 @@ sess_2 = new Object();
 var msgq = "";
 var connected = 4;
 var nickrx = /.+(?=!)/;
+var cmdrx = /^\/\w/;
 
 console.log('||||||||starting nodejs http server|||||||||||||');
 
@@ -42,11 +43,14 @@ function RecieveCallback2(session, even, origin, params)
             irc.SendMsg(session, chan, origin.match(nickrx)+", are you testing me?");
         if (params[1].match(/(.+cute.+)|(.+funny.+)|(.+nice.+)/))
             irc.SendMsg(session, chan, origin.match(nickrx)+", you are so cute! ^_^");
+        if (params[1].match(/(.+part.+)|(.+go away.+)/))
+            irc.Part(session, chan);
+        if (params[1].match(/(.+join.+)|(.+here my darling.+)/))
+            irc.Join(session, chan, "");
 }
 
 function RecieveCallback(session, even, origin, params)
 {
-    console.log('>%d %s: %s', session.sess_id, origin, params[1]);
     msgq = msgq + "<b>"+ origin.match(nickrx)+"</b>: " + params[1] + "<br>";
 }
 

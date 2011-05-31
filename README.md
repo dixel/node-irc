@@ -10,7 +10,7 @@ _Simple binding of libircclient for node.js._
     Creates an unique javascript object `Session` which will identify your IRC session
 + `Number Connect(Session session, Number port, String password, String nick, String username, String realname)`  
     Creates connection to the server. Returns 0 if success.
-+ `Integer Run(Session session)`  
++ `Run(Session session)`  
     Starts an IRC-session - processing callbacks, sending messages etc. Implemented non-blocking.
 + `Integer Disconnect(Session session)`  
     Disconnects from IRC-server, free memory ocupied by user-callbacks.
@@ -18,6 +18,16 @@ _Simple binding of libircclient for node.js._
     Join IRC-channel `channel` with passphrase `key`
 + `Integer SendMsg(Session session, String destination, String text)`  
     Send a message `text` to channel/nick `destination`
++ `Integer Part(Session session, String channel)`  
+    Part channel `channel` and stop talking here.
++ `Integer Invite(Session session, String nick, String channel)`  
+    Invite user `nick` to channel `channel`.
++ `Integer Mode(Session session, String channel, String mode)`  
+    Set mode (ex. +b -t etc) `mode` for channel `channel`.
++ `Integer Kick(Session session, String nick, String channel, String reason)`  
+    Kick user `nick` from `channel` for `reason`.
++ `Integer Topic(Session sessiom, String channel, String topic)`  
+    Set `topic` for `channel`.
 
 ####Callbacks object fields:
 All callback arguments are similar to their equivalents in [libircclient library](http://libircclient.sourceforge.net).
@@ -52,5 +62,6 @@ All callback arguments are similar to their equivalents in [libircclient library
     30.05.11:   Callbacks for: nick, part, join events. Testing script test.js.
     30.05.11:   Modified bot.
     30.05.11:   All callbacks now are dispatched by cmn_cb.
-    31.05.11:   Modified documentation - view README.md/README.html
+    31.05.11:   Modified documentation - view README.md/README.html.
+    31.05.11:   Functions: Part, Invite, Kick, Mode, Topic. Test how bot leaves channel - test.js.
 ****
