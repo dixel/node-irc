@@ -1,20 +1,35 @@
-:node-irc
-Simple binding of libircclient for node.js.
+# :node-irc:
+_Simple binding of libircclient for node.js._
 
------------------------------------------------
-1. Project TODO
-2. Commit history
-3. Functions description
------------------------------------------------
-1. PROJECT TODO
-    1. Write implementations of libitcclient functions
-        - understanding v8 engine
-        - bind javascript code to libircclient functions call
-    2. Compile binary module binding.node
-    3. Write testing javascript
-    4. Write simple web-face for irc-chatting
------------------------------------------------
-2. COMMIT HISTORY
+### 1. USAGE
+    require("./build/default/binding")
+
+### 2. MODULE DESCRIPTION
+####Functions:
++ `Session CreateSession(Callbacks callbacks)`  
+    Creates an unique javascript object `Session` which will identify your IRC session
++ `Number Connect(Session session, Number port, String password, String nick, String username, String realname)`  
+    Creates connection to the server. Returns 0 if success.
++ `Integer Run(Session session)`  
+    Starts an IRC-session - processing callbacks, sending messages etc. Implemented non-blocking.
++ `Integer Disconnect(Session session)`  
+    Disconnects from IRC-server, free memory ocupied by user-callbacks.
++ `Integer Join(Session session, String channel, String key)`  
+    Join IRC-channel `channel` with passphrase `key`
++ `Integer SendMsg(Session session, String destination, String text)`  
+    Send a message `text` to channel/nick `destination`
+
+####Callbacks object fields:
+All callback arguments are similar to their equivalents in [libircclient library](http://libircclient.sourceforge.net).
+
++ `connectCallback(Session session, String event, String origin, Array params)`  
++ `recieveCallback(Session session, String event, String origin, Array params)`  
++ `joinCallback(Session session, String event, String origin, Array params)`  
++ `partCallback(Session session, String event, String origin, Array params)`  
++ `nickCallback(Session session, String event, String origin, Array params)`  
+
+****
+### 3. COMMIT HISTORY
     10.03.11:   First commit: README, package.json files, TODO list
     17.03.11:   Added accessors for channel connection processing
     12.04.11:   Testing environment for libircclient and libev - testirc
@@ -37,15 +52,5 @@ Simple binding of libircclient for node.js.
     30.05.11:   Callbacks for: nick, part, join events. Testing script test.js.
     30.05.11:   Modified bot.
     30.05.11:   All callbacks now are dispatched by cmn_cb.
------------------------------------------------
-3. FUNCTIONS DESCRIPTION
-This is the list of most common libircclient functions musthave in our implementation
-    + irc_session_t* irc_create_session (irc_callback_t* callbacks)
-        """Creates and initiates a new IRC session.
-    + irc_destroy_session(irc_session_t* seshsion)
-        """Destroys session
-    + irc_connect(session, server, port, password, nick, uname, realname)
-        """Initiates a connection to IRC server
-    + irc_disconnect(irc_session_t* session)
-    + irc_run(irc_session_t* session)
-        """Goes into forever-loop, processing IRC events and generating callbacks
+    31.05.11:   Modified documentation - view README.md/README.html
+****

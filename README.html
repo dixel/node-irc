@@ -1,0 +1,64 @@
+<h1>:node-irc:</h1>
+
+<p><em>Simple binding of libircclient for node.js.</em></p>
+
+<h3>1. MODULE DESCRIPTION</h3>
+
+<h4>Functions:</h4>
+
+<ul>
+<li><code>Session CreateSession(Callbacks callbacks)</code> <br />
+Creates an unique javascript object <code>Session</code> which will identify your IRC session</li>
+<li><code>Number Connect(Session session, Number port, String password, String nick, String username, String realname)</code> <br />
+Creates connection to the server. Returns 0 if success.</li>
+<li><code>Integer Run(Session session)</code> <br />
+Starts an IRC-session - processing callbacks, sending messages etc. Implemented non-blocking.</li>
+<li><code>Integer Disconnect(Session session)</code> <br />
+Disconnects from IRC-server, free memory ocupied by user-callbacks.</li>
+<li><code>Integer Join(Session session, String channel, String key)</code> <br />
+Join IRC-channel <code>channel</code> with passphrase <code>key</code></li>
+<li><code>Integer SendMsg(Session session, String destination, String text)</code> <br />
+Send a message <code>text</code> to channel/nick <code>destination</code></li>
+</ul>
+
+<h4>Callbacks object fields:</h4>
+
+<p>All callback arguments are similar to their equivalents in <a href="http://libircclient.sourceforge.net">libircclient library</a>.</p>
+
+<ul>
+<li><code>connectCallback(Session session, String event, String origin, Array params)</code>  </li>
+<li><code>recieveCallback(Session session, String event, String origin, Array params)</code>  </li>
+<li><code>joinCallback(Session session, String event, String origin, Array params)</code>  </li>
+<li><code>partCallback(Session session, String event, String origin, Array params)</code>  </li>
+<li><code>nickCallback(Session session, String event, String origin, Array params)</code>  </li>
+</ul>
+
+<hr />
+
+<h3>2. COMMIT HISTORY</h3>
+
+<pre><code>10.03.11:   First commit: README, package.json files, TODO list
+17.03.11:   Added accessors for channel connection processing
+12.04.11:   Testing environment for libircclient and libev - testirc
+19.04.11:   Working tests: sending and recieving messages via console works well. Handling connected/recieved message events. New design of main module file (binding.cc)
+20.04.11:   CreateSession function prototype done. Arguments now are two callback functions
+20.04.11:   Persistent callback functions done. Now we can describe callbacks directly from javascript
+25.04.11:   Functions SendMsg, Join done, now everything can be done directly from JS
+27.04.11:   All about IRC events now works in another thread. ConnectCallback is working. Everything works in parallel with nodejs event loop. Web server and irc connection in example test.js
+28.04.11:   RecievedCallback events. Testing Web-page on 127.0.0.1:8100 - wait for connection to be viewed from console. Everything works fine, but we need a new arquitect to hold many irc connections. For showtime - small javascript which populates the page with new irc messages.
+03.05.11:   Testing web-page with chat window. Fixed some errors with memory management.
+11.05.11:   Many fixes, function Run() now works fine and is non-blocking. Time to begin with lots of sessions.
+16.05.11:   All callbacks for irc.SessionCreate(x) now are in a JavaScript object x.
+17.05.11:   Works with multiple sessions!
+17.05.11:   Two users in test.js: one for web-ui and one just bot.
+25.05.11:   Fixed bugs on 64-bit systems, state UML diagram.
+25.05.11:   Sequence UML diagram; header file binding.h with all necesarry information about JS functions.
+26.05.11:   Session now is an object returned by CreateSession(..); Disconnect function, callback fix.
+26.05.11:   Everything without prototypes. Just require("way_to_module"). You can choose nick on your testing page.
+30.05.11:   Common callback function written, base for implementing every one necessarry callback (joinCallback, partCallback for ex.); test.js modified for ex.)
+30.05.11:   Callbacks for: nick, part, join events. Testing script test.js.
+30.05.11:   Modified bot.
+30.05.11:   All callbacks now are dispatched by cmn_cb.
+</code></pre>
+
+<hr />

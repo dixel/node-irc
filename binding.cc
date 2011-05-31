@@ -122,19 +122,19 @@ void cmn_cb_ev(EV_P_ ev_async *watcher, int revents)
     {
         call_func(msg, "joinCallback");
     }
-    if (!strcmp(msg->event, "PART"))
+    else if (!strcmp(msg->event, "PART"))
     {
         call_func(msg, "partCallback");
     }
-    if(!strcmp(msg->event, "NICK"))
+    else if (!strcmp(msg->event, "NICK"))
     {
         call_func(msg, "nickCallback");
     }
-    if(!strcmp(msg->event, "CONNECT"))
+    else if (!strcmp(msg->event, "CONNECT"))
     {
         call_func(msg, "connectCallback");
     }
-    if(!strcmp(msg->event, "PRIVMSG"))
+    else if (!strcmp(msg->event, "PRIVMSG"))
     {
         call_func(msg, "recieveCallback");
     }

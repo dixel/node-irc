@@ -3,14 +3,17 @@
   "description": "node.js binding for libircclient",
   "version": "0.0.1",
   "homepage": "https://github.com/BACuTPOH/node-irc",
-  "repository": {
+  "repository": 
+  {
     "type": "git",
     "url": "git://github.com/BACuTPOH/node-irc.git"
   },
-  "author": "BACuTPOH <BACuTPOH@gmail.com> (dixel.blogspot.com)",
-  "main": "./build/default/binding",
+  "author": "Vasiliy Avdiushkin <BACuTPOH@gmail.com> (dixel.blogspot.com)",
+  "main": "./build/default/node-irc",
+  "bin": {"node-irc": "./build/default/binding"},
   "directories": {
-    "lib": "."
+    "lib": ".",
+    "path": "/usr/local/bin"
   },
   "engines": {
     "node": "*"
