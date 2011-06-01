@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var http = require('http');
 var util = require('util');
-var irc = require('./build/default/binding');
+var irc = require('./lib/default/node-irc');
 
 var hr_ref = '<html><meta http-equiv="refresh" content="10;url = ./"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><head><body><h1>simple IRC chat on irc.freenode.net #test_node</h1>'
 var hr_noref = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><head><body><h1>simple IRC chat on irc.freenode.net #test_node</h1>'
@@ -9,7 +9,7 @@ var ind = '<form method="get"><input type="text" name="nick" size=20>Nick<br> <i
 var con = '</td></tr></table> <form method="get"> <input type="text" name="msg" size=20> Message <br> <input type="submit" name="submit" value="Send"> <input type = "submit" name="submit" value = "Disconnect"><a name="bot"></a> </form> </body> </head> </html>'
 var tab = '<table noshade border=1 cellspacing=0 cellpadding=0 width=100%><tr><td><p align=center><b>irc.freenode.net #test_node</b></p>'
 var nick = 'abcder0017';
-var nick2 = 'botting_name_23572';
+var nick2 = 'botting_name_21572';
 var serv = 'irc.freenode.net';
 var chan = '#test_node';
 sess_1 = new Object();

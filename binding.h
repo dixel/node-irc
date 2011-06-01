@@ -1,5 +1,5 @@
 #define V8STR String::AsciiValue
-#define MAXCLI 10
+#define MAXCLI 100000
 #define EVENTLEN 10
 #define ORIGINLEN 30
 
@@ -50,6 +50,14 @@ static Handle<Value> Topic(const Arguments &args);
 static Handle<Value> Kick(const Arguments &args);
 static Handle<Value> Mode(const Arguments &args);
 static Handle<Value> Invite(const Arguments &args);
+static Handle<Value> Me(const Arguments &args);
+static Handle<Value> Notice(const Arguments &args);
+static Handle<Value> Quit(const Arguments &args);
+static Handle<Value> UserMode(const Arguments &args);
+static Handle<Value> Whois(const Arguments &args);
+static Handle<Value> SendRaw(const Arguments &args);
+static Handle<Value> SetCtx(const Arguments &args);
+static Handle<Value> GetCtx(const Arguments &args);
 
 //Internal structures and functions:
 

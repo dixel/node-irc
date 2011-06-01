@@ -4,8 +4,23 @@
 
 <h3>1. USAGE</h3>
 
-<pre><code>require("./build/default/binding")
-</code></pre>
+<p><code>javascript <br />
+    irc = require("./build/default/binding") <br />
+    //prepare callbacks <br />
+    callbacks = new Object(); <br />
+    callbacks.connectCallback = function (session, even, origin, params) <br />
+    { <br />
+        irc.Join(session, "#test_node", ""); <br />
+        irc.SendMsg(session, "#test_node", "Hello everybody on the channel"); <br />
+    } <br />
+    session = irc.CreateSession(callbacks); <br />
+    irc.Connect(session, "irc.freenode.net", 6667, "", "", "happy_nodejs_user", "", ""); <br />
+    irc.Run(session); <br />
+    //there is no thread.join, so you need to create forever-loop (for example http server) to proceed. <br />
+    while (1) <br />
+    { <br />
+    }
+</code></p>
 
 <h3>2. MODULE DESCRIPTION</h3>
 
@@ -76,6 +91,7 @@ Set <code>topic</code> for <code>channel</code>.</li>
 30.05.11:   All callbacks now are dispatched by cmn_cb.
 31.05.11:   Modified documentation - view README.md/README.html.
 31.05.11:   Functions: Part, Invite, Kick, Mode, Topic. Test how bot leaves channel - test.js.
+01.06.11:   Performance testing perf_test.js, modified sources for better performance.
 </code></pre>
 
 <hr />

@@ -2,8 +2,23 @@
 _Simple binding of libircclient for node.js._
 
 ### 1. USAGE
-    require("./build/default/binding")
-
+```javascript  
+    irc = require("./build/default/binding")  
+    //prepare callbacks  
+    callbacks = new Object();  
+    callbacks.connectCallback = function (session, even, origin, params)  
+    {  
+        irc.Join(session, "#test_node", "");  
+        irc.SendMsg(session, "#test_node", "Hello everybody on the channel");  
+    }  
+    session = irc.CreateSession(callbacks);  
+    irc.Connect(session, "irc.freenode.net", 6667, "", "", "happy_nodejs_user", "", "");  
+    irc.Run(session);  
+    //there is no thread.join, so you need to create forever-loop (for example http server) to proceed.  
+    while (1)  
+    {  
+    }  
+```
 ### 2. MODULE DESCRIPTION
 ####Functions:
 + `Session CreateSession(Callbacks callbacks)`  
@@ -64,4 +79,5 @@ All callback arguments are similar to their equivalents in [libircclient library
     30.05.11:   All callbacks now are dispatched by cmn_cb.
     31.05.11:   Modified documentation - view README.md/README.html.
     31.05.11:   Functions: Part, Invite, Kick, Mode, Topic. Test how bot leaves channel - test.js.
+    01.06.11:   Performance testing perf_test.js, modified sources for better performance.
 ****

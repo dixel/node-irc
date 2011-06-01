@@ -11,6 +11,7 @@ static Handle<Value> CreateSession(const Arguments &args)
     _callbacks.event_nick = cmn_cb;
 
     sess_cnt++;
+    int *sessn = new int(sess_cnt);
     Local<Object> Session = Object::New();
     Session->Set(String::New("sess_id"), Integer::New(sess_cnt));
 
@@ -20,8 +21,9 @@ static Handle<Value> CreateSession(const Arguments &args)
         UserCB[sess_cnt] = Persistent<Object>::New(userobj);
     }
 
+    printf("no segfault\n");
     _session[sess_cnt] = irc_create_session(&_callbacks);
-    irc_set_ctx(_session[sess_cnt], new int(sess_cnt));
+    irc_set_ctx(_session[sess_cnt], sessn);
     return(Session);
 }
 
@@ -68,11 +70,13 @@ static Handle<Value> Run(const Arguments &args)
 {
     printf("DEBUG:: run\n");
     unsigned int sess_id = strip_sess(args[0]);
+    int *sessid = new int(sess_id);
     pthread_t thread;
     ev_async_init(&eio_cm, cmn_cb_ev);
     ev_async_start(EV_DEFAULT_UC_ &eio_cm);
-    pthread_create(&thread, NULL, run_thr, new int (sess_id));
+    printf("thread %s\n", strerror(pthread_create(&thread, NULL, run_thr, sessid)));
     ev_loop(EV_DEFAULT_ EVLOOP_NONBLOCK);
+    return Integer::New(5);
 }
 
 static Handle<Value> Join(const Arguments &args)
@@ -140,7 +144,7 @@ static Handle<Value> SendMsg(const Arguments &args)
 
 void *run_thr(void *vptr_args)
 {
-    printf("DEBUG:: run_thr\n sess_id = %d\n", *reinterpret_cast<int*>(vptr_args));
+    printf("DEBUG:: run_thr sess_id = %d\n", *reinterpret_cast<int*>(vptr_args));
     irc_run(_session[*reinterpret_cast<int*>(vptr_args)]);
     delete reinterpret_cast<int *>(vptr_args);
 }
@@ -160,7 +164,7 @@ void cmn_cb(irc_session_t *session, const char *event, const char *origin, const
 void cmn_cb_ev(EV_P_ ev_async *watcher, int revents)
 {
     printf("DEBUG:: cmn_cb_ev\n");
-    cbvar *msg = new cbvar(*(cbvar *)ev_userdata());
+    cbvar *msg = (cbvar *)ev_userdata();
     printf("%s\n", msg->event);
     if (!strcmp(msg->event, "JOIN"))
     {
@@ -181,6 +185,10 @@ void cmn_cb_ev(EV_P_ ev_async *watcher, int revents)
     else if (!strcmp(msg->event, "PRIVMSG"))
     {
         call_func(msg, "recieveCallback");
+    }
+    else
+    {
+        delete msg;
     }
 }
 
@@ -211,9 +219,9 @@ int call_func(cbvar *msg, const char *name)
             Local<Function> fn = Function::Cast(*(func));
             fn->Call(tmp, 4, args);
         }
+        delete msg;
     }
 }
-
 extern "C" void
 init (Handle<Object> target)
 {
